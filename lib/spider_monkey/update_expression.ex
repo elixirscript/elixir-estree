@@ -2,7 +2,7 @@ defmodule SpiderMonkey.UpdateExpression do
   @type t :: %SpiderMonkey.UpdateExpression{ 
     type: binary, 
     loc: SpiderMonkey.SourceLocation.t | nil,
-    operator: SpiderMonkey.update_expression,
+    operator: SpiderMonkey.update_operator,
     argument: SpiderMonkey.Expression.t ,
     prefix: boolean
   }

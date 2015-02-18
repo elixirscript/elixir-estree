@@ -8,7 +8,11 @@ defmodule SpiderMonkey.Node do
               SpiderMonkey.Pattern.t |
               SpiderMonkey.SwitchCase.t |
               SpiderMonkey.CatchClause.t |
-              SpiderMonkey.ComprehensionBlock.t |
               SpiderMonkey.Identifier.t |
-              SpiderMonkey.Literal.t
+              SpiderMonkey.Literal.t |
+              SpiderMonkey.MethodDefinition.t |
+              SpiderMonkey.Class.t |
+              SpiderMonkey.ClassBody.t |
+              SpiderMonkey.ImportSpecifier.t |
+              SpiderMonkey.ExportSpecifier.t
 end 

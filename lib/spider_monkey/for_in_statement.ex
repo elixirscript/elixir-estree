@@ -4,13 +4,11 @@ defmodule SpiderMonkey.ForInStatement do
     loc: SpiderMonkey.SourceLocation.t | nil,
     left: SpiderMonkey.VariableDeclaration.t | SpiderMonkey.Expression.t ,
     right: SpiderMonkey.Expression.t ,
-    body: SpiderMonkey.Statement.t ,
-    each: boolean
+    body: SpiderMonkey.Statement.t
   }
   defstruct type: "ForInStatement", 
             loc: nil, 
             left: %SpiderMonkey.EmptyExpression{},
             right: %SpiderMonkey.EmptyExpression{},
-            body: %SpiderMonkey.EmptyStatement{},
-            each: false
+            body: %SpiderMonkey.EmptyStatement{}
 end 

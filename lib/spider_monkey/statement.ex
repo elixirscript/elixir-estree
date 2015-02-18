@@ -16,7 +16,6 @@ defmodule SpiderMonkey.Statement do
               SpiderMonkey.ForStatement.t |
               SpiderMonkey.ForInStatement.t |
               SpiderMonkey.ForOfStatement.t |
-              SpiderMonkey.LetStatement.t |
               SpiderMonkey.DebuggerStatement.t |
               SpiderMonkey.Declaration.t
 end 

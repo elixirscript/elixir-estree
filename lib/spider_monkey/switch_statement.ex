@@ -3,12 +3,10 @@ defmodule SpiderMonkey.SwitchStatement do
     type: binary, 
     loc: SpiderMonkey.SourceLocation.t | nil,
     discriminant: SpiderMonkey.Expression.t ,
-    cases: [SpiderMonkey.SwitchCase.t],
-    lexical: boolean
+    cases: [SpiderMonkey.SwitchCase.t]
   }
   defstruct type: "SwitchStatement", 
             loc: nil, 
             discriminant: %SpiderMonkey.EmptyExpression{},
-            cases: [],
-            lexical: false
+            cases: []
 end 

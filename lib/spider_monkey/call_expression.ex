@@ -7,7 +7,6 @@ defmodule SpiderMonkey.CallExpression do
   }
   defstruct type: "CallExpression", 
             loc: nil, 
-            operator: nil,
             callee: %SpiderMonkey.EmptyExpression{},
-            arguments: []           
+            arguments: []          
 end 

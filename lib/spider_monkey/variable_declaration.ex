@@ -8,5 +8,5 @@ defmodule SpiderMonkey.VariableDeclaration do
   defstruct type: "VariableDeclaration", 
             loc: nil,
             declarations: [],
-            kind: "var"
+            kind: :var
 end 

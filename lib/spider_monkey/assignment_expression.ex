@@ -2,8 +2,8 @@ defmodule SpiderMonkey.AssignmentExpression do
   @type t :: %SpiderMonkey.AssignmentExpression{ 
     type: binary, 
     loc: SpiderMonkey.SourceLocation.t | nil,
-    operator: SpiderMonkey.assignment_expression,
-    left: SpiderMonkey.Pattern.t, 
+    operator: SpiderMonkey.assignment_operator,
+    left: SpiderMonkey.Pattern.t | SpiderMonkey.Expression.t, 
     right: SpiderMonkey.Expression.t
   }
   defstruct type: "AssignmentExpression", 

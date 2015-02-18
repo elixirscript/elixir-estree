@@ -2,7 +2,7 @@ defmodule SpiderMonkey.LogicalExpression do
   @type t :: %SpiderMonkey.LogicalExpression{ 
     type: binary, 
     loc: SpiderMonkey.SourceLocation.t | nil,
-    operator: SpiderMonkey.logical_expression,
+    operator: SpiderMonkey.logical_operator,
     left: SpiderMonkey.Expression.t ,
     right: SpiderMonkey.Expression.t  
   }

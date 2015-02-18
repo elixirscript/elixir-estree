@@ -1,14 +1,12 @@
-defmodule SpiderMonkey.CatchCase do
-  @type t :: %SpiderMonkey.CatchCase{ 
+defmodule SpiderMonkey.CatchClause do
+  @type t :: %SpiderMonkey.CatchClause{ 
     type: binary, 
     loc: SpiderMonkey.SourceLocation.t | nil,
     param: SpiderMonkey.Pattern.t,
-    guard: SpiderMonkey.Expression.t | nil,
-    body: SpiderMonkey.BlockStatement
+    body: SpiderMonkey.BlockStatement.t
   }
-  defstruct type: "CatchCase", 
+  defstruct type: "CatchClause", 
             loc: nil, 
             param: %SpiderMonkey.EmptyExpression{},
-            guard: nil,
             body: %SpiderMonkey.BlockStatement{}
 end 

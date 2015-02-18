@@ -5,12 +5,12 @@ defmodule SpiderMonkey.TryStatement do
     block: SpiderMonkey.BlockStatement.t,
     handler: SpiderMonkey.CaseClause.t | nil,
     guardedHandlers: [SpiderMonkey.CaseClause.t],
-    body: SpiderMonkey.BlockStatement.t | nil
+    finalizer: SpiderMonkey.BlockStatement.t | nil
   }
   defstruct type: "TryStatement", 
             loc: nil, 
             block: %SpiderMonkey.BlockStatement{},
             handler: nil,
             guardedHandlers: [],
-            body: nil
+            finalizer: nil
 end 

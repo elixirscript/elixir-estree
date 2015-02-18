@@ -6,7 +6,7 @@ defmodule SpiderMonkey.FunctionDeclaration do
     params: [SpiderMonkey.Pattern.t ],
     defaults: [ SpiderMonkey.Expression.t  ],
     rest: SpiderMonkey.Identifier.t | nil,
-    body: SpiderMonkey.BlockStatement.t | SpiderMonkey.Expression.t ,
+    body: SpiderMonkey.BlockStatement.t,
     generator: boolean,
     expression: boolean  
   }

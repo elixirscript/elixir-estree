@@ -9,7 +9,7 @@ defmodule SpiderMonkey do
 
   @type binary_operator ::  :== | :!= | :=== | :!== | :< | :<= | :> | :>= | 
                             :"<<" | :">>" | :>>> | :+ | :- | :* | :/ | :% | :| | 
-                            :^ | :& | :in | :instanceof | :..
+                            :^ | :& | :in | :instanceof
 
   @type logical_operator  ::  :|| | :&&
 

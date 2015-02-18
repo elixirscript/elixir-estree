@@ -15,11 +15,7 @@ defmodule SpiderMonkey.Expression do
               SpiderMonkey.CallExpression.t |
               SpiderMonkey.MemberExpression.t |
               SpiderMonkey.YieldExpression.t |
-              SpiderMonkey.ComprehensionExpression.t |
-              SpiderMonkey.GeneratorExpression.t |
-              SpiderMonkey.GraphExpression.t |
-              SpiderMonkey.GraphIndexExpression.t |
-              SpiderMonkey.LetExpression.t |
               SpiderMonkey.Identifier.t |
-              SpiderMonkey.Literal.t
+              SpiderMonkey.Literal.t |
+              SpiderMonkey.ClassExpression.t
 end 

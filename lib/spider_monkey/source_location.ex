@@ -4,5 +4,7 @@ defmodule SpiderMonkey.SourceLocation do
     start: SpiderMonkey.Position.t, 
     end: SpiderMonkey.Position.t 
   }
-  defstruct source: nil, start: %SpiderMonkey.Position{}, end: %SpiderMonkey.Position{}
+  defstruct source: nil, 
+            start: %SpiderMonkey.Position{}, 
+            end: %SpiderMonkey.Position{}
 end 
