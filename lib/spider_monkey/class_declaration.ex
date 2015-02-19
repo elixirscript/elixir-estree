@@ -3,10 +3,10 @@ defmodule SpiderMonkey.ClassDeclaration do
     type: binary, 
     loc: SpiderMonkey.SourceLocation.t | nil,
     id: SpiderMonkey.Identifier.t,
-    body: [SpiderMonkey.MethodDefinition.t]
+    body: SpiderMonkey.ClassBody.t
   }
   defstruct type: "ClassDeclaration", 
             loc: nil,
             id: %SpiderMonkey.Identifier{},
-            body: []
+            body: %SpiderMonkey.ClassBody{}
 end 

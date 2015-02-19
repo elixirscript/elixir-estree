@@ -118,7 +118,7 @@ defmodule SpiderMonkey.Builder do
 
   @spec class_declaration(
     SpiderMonkey.Identifier.t,
-    [SpiderMonkey.MethodDefinition.t],
+    SpiderMonkey.ClassBody.t,
     SpiderMonkey.SourceLocation.t | nil
   ) :: SpiderMonkey.ClassDeclaration.t
   def class_declaration(id, body, loc \\ nil) do
@@ -128,7 +128,7 @@ defmodule SpiderMonkey.Builder do
   end  
 
   @spec class_expression(
-    [SpiderMonkey.MethodDefinition.t],
+    SpiderMonkey.ClassBody.t,
     SpiderMonkey.SourceLocation.t | nil
   ) :: SpiderMonkey.ClassExpression.t
   def class_expression(body, loc \\ nil) do
@@ -204,7 +204,7 @@ defmodule SpiderMonkey.Builder do
     SpiderMonkey.Identifier.t | nil,
     SpiderMonkey.SourceLocation.t | nil
   ) :: SpiderMonkey.ExportDeclaration.t
-  def export_declaration(declaration, specifiers, default \\ false, source \\ nil, loc \\ nil) do
+  def export_declaration(declaration, specifiers \\ [], default \\ false, source \\ nil, loc \\ nil) do
     %SpiderMonkey.ExportDeclaration{ 
       declaration: declaration, specifiers: specifiers, default: default, source: source, loc: loc
     }
