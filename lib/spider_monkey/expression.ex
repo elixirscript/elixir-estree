@@ -3,7 +3,7 @@ defmodule SpiderMonkey.Expression do
               SpiderMonkey.ArrayExpression.t |
               SpiderMonkey.ObjectExpression.t |
               SpiderMonkey.FunctionExpression.t |
-              SpiderMonkey.ArrowExpression.t |
+              SpiderMonkey.ArrowFunctionExpression.t |
               SpiderMonkey.SequenceExpression.t |
               SpiderMonkey.UnaryExpression.t |
               SpiderMonkey.BinaryExpression.t |

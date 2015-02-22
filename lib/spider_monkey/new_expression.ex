@@ -7,7 +7,6 @@ defmodule SpiderMonkey.NewExpression do
   }
   defstruct type: "NewExpression", 
             loc: nil, 
-            operator: nil,
             callee: %SpiderMonkey.EmptyExpression{},
             arguments: []           
 end 

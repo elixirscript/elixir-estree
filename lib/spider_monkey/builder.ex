@@ -24,7 +24,7 @@ defmodule SpiderMonkey.Builder do
     %SpiderMonkey.ArrayPattern{ elements: elements, loc: loc }
   end 
 
-  @spec arrow_expression(
+  @spec arrow_function_expression(
     [SpiderMonkey.Pattern.t], 
     [ SpiderMonkey.Expression.t ], 
     SpiderMonkey.Identifier.t | nil, 
@@ -32,9 +32,9 @@ defmodule SpiderMonkey.Builder do
     boolean,
     boolean,
     SpiderMonkey.SourceLocation.t | nil
-  ) :: SpiderMonkey.ArrowExpression.t
-  def arrow_expression(params, defaults, body, rest \\ nil, generator \\ false, expression \\ false, loc \\ nil) do
-    %SpiderMonkey.ArrowExpression{ 
+  ) :: SpiderMonkey.ArrowFunctionExpression.t
+  def arrow_function_expression(params, defaults, body, rest \\ nil, generator \\ false, expression \\ false, loc \\ nil) do
+    %SpiderMonkey.ArrowFunctionExpression{ 
       params: params, defaults: defaults, rest: rest, 
       body: body, generator: generator, expression: expression, loc: loc 
     }
