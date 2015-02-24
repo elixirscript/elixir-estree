@@ -119,11 +119,12 @@ defmodule ESTree.Builder do
   @spec class_declaration(
     ESTree.Identifier.t,
     ESTree.ClassBody.t,
+    ESTree.Expression.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ClassDeclaration.t
-  def class_declaration(id, body, loc \\ nil) do
+  def class_declaration(id, body, superClass \\ nil, loc \\ nil) do
     %ESTree.ClassDeclaration{ 
-      id: id, body: body, loc: loc
+      id: id, body: body, loc: loc, superClass: superClass
     }
   end  
 
@@ -199,7 +200,7 @@ defmodule ESTree.Builder do
 
   @spec export_declaration(
     ESTree.Declaration.t,
-    [ESTree.ExportSpecifier.t],
+    [ESTree.ExportSpecifier.t | ESTree.ExportBatchSpecifier.t],
     boolean,
     ESTree.Identifier.t | nil,
     ESTree.SourceLocation.t | nil
@@ -210,14 +211,22 @@ defmodule ESTree.Builder do
     }
   end
 
-  #TODO: Figure out what the structure for this looks like
   @spec export_specifier(
+    ESTree.Identifier.t,
+    ESTree.Identifier.t | nil,    
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportSpecifier.t
-  def export_specifier(loc \\ nil) do
+  def export_specifier(id, name \\ nil, loc \\ nil) do
     %ESTree.ExportSpecifier{ 
-      loc: loc
+      id: id, name: name, loc: loc
     }
+  end
+
+  @spec export_batch_specifier(   
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.ExportBatchSpecifier.t
+  def export_specifier(loc \\ nil) do
+    %ESTree.ExportBatchSpecifier{loc: loc}
   end
 
   @spec expression_statement(
@@ -323,7 +332,7 @@ defmodule ESTree.Builder do
   end
 
   @spec import_declaration(
-    [ESTree.ImportSpecifier.t],
+    [ESTree.ImportSpecifier.t | ESTree.ImportNamespaceSpecifier.t | ESTree.ImportDefaultSpecifier.t],
     ESTree.Identifier.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ImportDeclaration.t
@@ -342,6 +351,26 @@ defmodule ESTree.Builder do
   def import_specifier(id, name \\ nil, default \\ false, loc \\ nil) do
     %ESTree.ImportSpecifier{ 
       id: id, name: name, default: default, loc: loc
+    }
+  end
+
+  @spec import_namespace_specifier(
+    ESTree.Identifier.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.ImportNamespaceSpecifier.t
+  def import_namespace_specifier(id, loc \\ nil) do
+    %ESTree.ImportNamespaceSpecifier{ 
+      id: id, loc: loc
+    }
+  end
+
+  @spec import_default_specifier(
+    ESTree.Identifier.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.ImportDefaultSpecifier.t
+  def import_default_specifier(id, loc \\ nil) do
+    %ESTree.ImportDefaultSpecifier{ 
+      id: id, loc: loc
     }
   end
 
