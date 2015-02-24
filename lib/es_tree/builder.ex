@@ -225,7 +225,7 @@ defmodule ESTree.Builder do
   @spec export_batch_specifier(   
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportBatchSpecifier.t
-  def export_specifier(loc \\ nil) do
+  def export_batch_specifier(loc \\ nil) do
     %ESTree.ExportBatchSpecifier{loc: loc}
   end
 
