@@ -1,5 +1,5 @@
-# v1.0.0-dev
+# v1.0.0
 
 * Enhancements
-  * Follows the ESTree Spec
-  * Fills in definitions around es6 modules from what acorn currently produces
+  * Has the Node definitions from the [ESTree Spec](https://github.com/estree/estree) 
+  * Fills in ES6 Node definitions from [ast-types](https://github.com/benjamn/ast-types) and some from testing with [acorn](https://github.com/marijnh/acorn)

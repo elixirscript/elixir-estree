@@ -1,12 +1,7 @@
 defmodule ESTree.Builder do
   @moduledoc """
-  Functions for building the ESTree nodes 
+  Functions to make building the Nodes easier
   """
-
-  @spec to_json(ESTree.Node.t) :: binary
-  def to_json(node) do
-    Poison.encode!(node)
-  end
 
   @spec array_expression(
     [ESTree.Expression.t | nil], 
