@@ -25,7 +25,7 @@ defmodule ESTree.Mixfile do
 
   defp description do
     """
-    The SpiderMonkey AST Node definitions. Mostly following the ESTree Spec
+    The SpiderMonkey AST Node definitions. Mostly following the ESTree Spec. Targets ES6 definitions
     """
   end
 
