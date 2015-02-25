@@ -17,5 +17,7 @@ defmodule ESTree.Expression do
               ESTree.YieldExpression.t |
               ESTree.Identifier.t |
               ESTree.Literal.t |
-              ESTree.ClassExpression.t
+              ESTree.ClassExpression.t |
+              ESTree.TemplateLiteral.t |
+              ESTree.TaggedTemplateExpression.t
 end 

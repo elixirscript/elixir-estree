@@ -559,6 +559,40 @@ defmodule ESTree.Builder do
     }
   end
 
+  @spec tagged_template_expression(
+    ESTree.Expression.t,
+    ESTree.TemplateLiteral.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.TaggedTemplateExpression.t
+  def tagged_template_expression(tag, quasi, loc \\ nil) do
+    %ESTree.TaggedTemplateExpression{ 
+      tag: tag, quasi: quasi, loc: loc
+    }
+  end
+
+  @spec template_element(
+    binary,
+    binary,
+    boolean,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.TemplateElement.t
+  def template_element(cooked_value, raw_value, tail, loc \\ nil) do
+    %ESTree.TemplateElement{ 
+      value: %{cooked: cooked_value, raw: raw_value}, tail: tail, loc: loc
+    }
+  end
+
+  @spec template_literal(
+    [ESTree.TemplateElement.t],
+    [ESTree.Expression.t],
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.TemplateLiteral.t
+  def template_literal(quasis, expressions, loc \\ nil) do
+    %ESTree.TemplateLiteral{ 
+      quasis: quasis, expressions: expressions, loc: loc
+    }
+  end
+
   @spec this_expression(
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ThisExpression.t

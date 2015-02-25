@@ -15,5 +15,6 @@ defmodule ESTree.Node do
               ESTree.ClassBody.t |
               ESTree.ImportSpecifier.t |
               ESTree.ImportNamespaceSpecifier.t |
-              ESTree.ExportSpecifier.t
+              ESTree.ExportSpecifier.t |
+              ESTree.TemplateElement.t
 end 
