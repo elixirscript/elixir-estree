@@ -1,3 +1,8 @@
+# v1.1-dev
+
+* Enhancements
+  * Add new regex property to literal
+
 # v1.0.0
 
 * Enhancements
