@@ -382,11 +382,12 @@ defmodule ESTree.Builder do
 
   @spec literal(
     binary | boolean | number | nil,
+    ESTree.Regex.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.Literal.t
-  def literal(value, loc \\ nil) do
+  def literal(value, regex \\ nil, loc \\ nil) do
     %ESTree.Literal{ 
-      value: value, loc: loc
+      value: value, regex: regex, loc: loc
     }
   end
 
@@ -498,6 +499,16 @@ defmodule ESTree.Builder do
   def property(key, value, kind \\ :init, loc \\ nil) do
     %ESTree.Property{ 
       key: key, value: value, kind: kind, loc: loc
+    }
+  end
+
+  @spec regex(
+    binary,
+    binary
+  ) :: ESTree.Regex.t
+  def regex(pattern, flags) do
+    %ESTree.Regex{ 
+      pattern: pattern, flags: flags
     }
   end
 
