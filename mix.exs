@@ -12,7 +12,7 @@ defmodule ESTree.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :poison]]
+    [applications: [:logger]]
   end
 
   defp deps do
