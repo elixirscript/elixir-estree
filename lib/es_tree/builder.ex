@@ -275,8 +275,8 @@ defmodule ESTree.Builder do
     ESTree.Identifier.t,
     [ESTree.Pattern.t], 
     [ ESTree.Expression.t ], 
-    ESTree.Identifier.t | nil, 
     ESTree.BlockStatement.t,
+    ESTree.Identifier.t | nil,
     boolean,
     boolean,
     ESTree.SourceLocation.t | nil
