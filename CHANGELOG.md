@@ -1,4 +1,4 @@
-# v1.1-dev
+# v1.1
 
 * Enhancements
   * Add new regex property to literal
