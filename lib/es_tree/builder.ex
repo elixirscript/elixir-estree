@@ -73,7 +73,7 @@ defmodule ESTree.Builder do
     ESTree.Identifier.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.BreakStatement.t
-  def break_statement(label, loc \\ nil) do
+  def break_statement(label \\ nil, loc \\ nil) do
     %ESTree.BreakStatement{ 
       label: label, loc: loc
     }
@@ -620,14 +620,13 @@ defmodule ESTree.Builder do
 
   @spec try_statement(
     ESTree.BlockStatement.t,
-    ESTree.CaseClause.t | nil,
-    [ESTree.CaseClause.t],
+    ESTree.CatchClause.t | nil,
     ESTree.BlockStatement.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.TryStatement.t
-  def try_statement(block, handler, guardedHandlers, finalizer, loc \\ nil) do
+  def try_statement(block, handler, finalizer, loc \\ nil) do
     %ESTree.TryStatement{ 
-      block: block, handler: handler, guardedHandlers: guardedHandlers, finalizer: finalizer, loc: loc
+      block: block, handler: handler, finalizer: finalizer, loc: loc
     }
   end
 
