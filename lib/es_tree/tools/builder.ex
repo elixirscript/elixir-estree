@@ -217,7 +217,7 @@ defmodule ESTree.Tools.Builder do
   end
 
   @spec export_default_declaration(
-    ESTree.Declaration.t | ESTree.Expression.t,                    
+    ESTree.Declaration.t | ESTree.Expression.t,               
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportDefaultDeclaration.t
   def export_default_declaration(declaration \\ nil, loc \\ nil) do

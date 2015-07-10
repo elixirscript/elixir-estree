@@ -55,6 +55,10 @@ defmodule ESTree.Tools.Generator do
     "/#{regex.pattern}/#{regex.flags}"
   end
 
+  def generate(%ESTree.Literal{value: value}) when is_boolean(value) do
+    "#{to_string(value)}"
+  end
+  
   def generate(%ESTree.Literal{value: value}) when is_atom(value) do
     "'#{to_string(value)}'"
   end
@@ -212,7 +216,7 @@ defmodule ESTree.Tools.Generator do
     ids = Enum.map_join(declarations, ",",  fn(x) -> generate(x.id) end)
     inits = Enum.map_join(declarations, ",", fn(x) -> generate(x.init) end) 
 
-    "#{to_string(kind)} #{ids} = #{inits};"
+    "#{to_string(kind)} #{ids} = #{inits}"
   end
 
   def generate(%ESTree.VariableDeclarator{id: id, init: nil}) do
@@ -542,12 +546,25 @@ defmodule ESTree.Tools.Generator do
     "#{meta}.#{property}"
   end
 
+  def generate(%ESTree.ImportDeclaration{specifiers: [%{ImportDefaultSpecifier{}}] = specifiers, source: source}) do
+    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    source = generate(source)
+
+    "import #{specifiers} from #{source};"
+  end
+
+  def generate(%ESTree.ImportDeclaration{specifiers: [%{ImportNamespaceSpecifier{}}] = specifiers, source: source}) do
+    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    source = generate(source)
+
+    "import #{specifiers} from #{source};"
+  end
   
   def generate(%ESTree.ImportDeclaration{specifiers: specifiers, source: source}) do
     specifiers = Enum.map_join(specifiers, ",", &generate(&1))
     source = generate(source)
 
-    "import #{specifiers} from #{source};"
+    "import { #{specifiers} } from #{source};"
   end
 
   
@@ -556,9 +573,9 @@ defmodule ESTree.Tools.Generator do
     imported = generate(imported)
 
     if local == imported do
-      "{#{local}}"
+      "#{local}"
     else
-      "{#{imported} as #{local} }"
+      "#{imported} as #{local}"
     end
   end
 
