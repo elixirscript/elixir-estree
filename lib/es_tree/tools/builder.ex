@@ -217,7 +217,7 @@ defmodule ESTree.Tools.Builder do
   end
 
   @spec export_default_declaration(
-    ESTree.Declaration.t | ESTree.Expression.t,               
+    ESTree.Declaration.t | ESTree.Expression.t,                
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportDefaultDeclaration.t
   def export_default_declaration(declaration \\ nil, loc \\ nil) do
@@ -232,7 +232,7 @@ defmodule ESTree.Tools.Builder do
     ESTree.Literal.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportNamedDeclaration.t
-  def export_named_declaration(declaration \\ nil, specifiers, source \\ nil, loc \\ nil) do
+  def export_named_declaration(declaration, specifiers \\ [], source \\ nil, loc \\ nil) do
     %ESTree.ExportNamedDeclaration{ 
       declaration: declaration, specifiers: specifiers,
       source: source, loc: loc
@@ -244,7 +244,7 @@ defmodule ESTree.Tools.Builder do
     ESTree.Identifier.t | nil,    
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportSpecifier.t
-  def export_specifier(local, exported \\ nil, loc \\ nil) do
+  def export_specifier(exported, local \\ nil, loc \\ nil) do
     %ESTree.ExportSpecifier{ 
       local: local, exported: exported, loc: loc
     }
@@ -388,7 +388,7 @@ defmodule ESTree.Tools.Builder do
     ESTree.Identifier.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ImportSpecifier.t
-  def import_specifier(local, imported \\ nil, loc \\ nil) do
+  def import_specifier(imported, local \\ nil, loc \\ nil) do
     %ESTree.ImportSpecifier{ 
       local: local, imported: imported, loc: loc
     }

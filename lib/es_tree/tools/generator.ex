@@ -18,6 +18,8 @@ defmodule ESTree.Tools.Generator do
 
   @update_operators [:++, :--]
 
+  @indent "    "
+
   @spec generate(ESTree.unary_operator | ESTree.binary_operator | ESTree.logical_operator | ESTree.assignment_operator | ESTree.update_operator | ESTree.Node.t) :: binary
   def generate(unary_operator) when unary_operator in @unary_operators do
     to_string(unary_operator)
@@ -114,8 +116,20 @@ defmodule ESTree.Tools.Generator do
    "{" <> Enum.map_join(body, "\n", &generate(&1)) <> "}"
   end
 
-  def generate(%ESTree.ExpressionStatement{} = ast) do
-    "#{generate(ast.expression)};"
+  def generate(%ESTree.ExpressionStatement{expression: %ESTree.FunctionExpression{} = expression}) do
+    "(#{generate(expression)});"
+  end
+    
+  def generate(%ESTree.ExpressionStatement{expression: %ESTree.CallExpression{callee: %ESTree.FunctionExpression{}} = expression}) do
+    "(#{generate(expression)});"
+  end
+
+  def generate(%ESTree.ExpressionStatement{expression: %ESTree.CallExpression{callee: %ESTree.MemberExpression{object: %ESTree.FunctionExpression{}}} = expression}) do
+    "(#{generate(expression)});"
+  end
+  
+  def generate(%ESTree.ExpressionStatement{expression: expression}) do
+    "#{generate(expression)};"
   end
 
   def generate(%ESTree.IfStatement{test: test, consequent: consequent, alternate: alternate}) do
@@ -196,11 +210,11 @@ defmodule ESTree.Tools.Generator do
     update = generate(update)
     body = generate(body)
 
-    "for(#{init};#{test};#{update}) #{body}"
+    "for(#{init}; #{test}; #{update}) #{body}"
   end
 
   def generate(%ESTree.ForInStatement{left: left, right: right, body: body}) do
-    left = generate(left)
+    left = generate(left) |> String.replace(";","")
     right = generate(right)
     body = generate(body)
 
@@ -211,18 +225,24 @@ defmodule ESTree.Tools.Generator do
     "debugger;"
   end
 
-  def generate(%ESTree.VariableDeclaration{kind: kind, declarations: declarations}) do
+  def generate(%ESTree.VariableDeclaration{kind: kind, declarations: [declaration]}) when kind in [:var, :let, :const] do
+    declaration = generate(declaration)
+
+    "#{to_string(kind)} #{declaration};"
+  end
+  
+  def generate(%ESTree.VariableDeclaration{kind: kind, declarations: declarations}) when kind in [:var, :let, :const] do
 
     ids = Enum.map_join(declarations, ",",  fn(x) -> generate(x.id) end)
     inits = Enum.map_join(declarations, ",", fn(x) -> generate(x.init) end) 
 
-    "#{to_string(kind)} #{ids} = #{inits}"
+    "#{to_string(kind)} #{ids} = #{inits};"
   end
 
   def generate(%ESTree.VariableDeclarator{id: id, init: nil}) do
     generate(id)
   end
-
+  
   def generate(%ESTree.VariableDeclarator{id: id, init: init}) do
     "#{generate(id)} = #{generate(init)}"
   end
@@ -306,7 +326,23 @@ defmodule ESTree.Tools.Generator do
   def generate(%ESTree.UnaryExpression{operator: operator, prefix: false, argument: argument}) do
     "#{generate(argument)}#{generate(operator)}"
   end
+  
+  def generate(%ESTree.BinaryExpression{operator: operator, left: %ESTree.BinaryExpression{} = left, right: %ESTree.BinaryExpression{} = right}) do
+    operator = generate(operator)
+    left = generate(left)
+    right = generate(right)
 
+    "(#{left}) #{operator} (#{right})"
+  end
+  
+  def generate(%ESTree.BinaryExpression{operator: operator, left: left, right: %ESTree.BinaryExpression{} = right}) do
+    operator = generate(operator)
+    left = generate(left)
+    right = generate(right)
+
+    "#{left} #{operator} (#{right})"
+  end
+  
   def generate(%ESTree.BinaryExpression{operator: operator, left: left, right: right}) do
     operator = generate(operator)
     left = generate(left)
@@ -415,7 +451,7 @@ defmodule ESTree.Tools.Generator do
   end
 
   def generate(%ESTree.ForOfStatement{left: left, right: right, body: body}) do
-    left = generate(left)
+    left = generate(left) |> String.replace(";","")
     right = generate(right)
     body = generate(body)
 
@@ -560,7 +596,7 @@ defmodule ESTree.Tools.Generator do
     "import #{specifiers} from #{source};"
   end
   
-  def generate(%ESTree.ImportDeclaration{specifiers: specifiers, source: source}) do
+  def generate(%ESTree.ImportDeclaration{specifiers: specifiers, source: source} = ast) do
     specifiers = Enum.map_join(specifiers, ",", &generate(&1))
     source = generate(source)
 
@@ -589,12 +625,18 @@ defmodule ESTree.Tools.Generator do
     "* as #{local}"
   end
 
+  def generate(%ESTree.ExportNamedDeclaration{declaration: %ESTree.FunctionDeclaration{} = declaration, specifiers: [], source: nil}) do
+     declaration = generate(declaration)
+    "export #{declaration}"
+  end
+  
   def generate(%ESTree.ExportNamedDeclaration{declaration: declaration, specifiers: [], source: nil}) do
      declaration = generate(declaration)
     "export #{declaration};"
   end
   
-  def generate(%ESTree.ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: nil}) do
+  def generate(%ESTree.ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: nil} = ast) do
+    IO.inspect(ast)
     specifiers = Enum.map_join(specifiers, ",", &generate(&1))
 
     "export #{specifiers};"
