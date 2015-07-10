@@ -54,8 +54,15 @@ defmodule ESTree.Tools.Generator do
   def generate(%ESTree.Literal{value: %{}, regex: regex}) do
     "/#{regex.pattern}/#{regex.flags}"
   end
+
+  def generate(%ESTree.Literal{value: value}) when is_atom(value) do
+    "'#{to_string(value)}'"
+  end
   
   def generate(%ESTree.Literal{value: value}) when is_binary(value) do
+    value = String.replace(value, "\n", "\\n")
+    |> String.replace("\t", "\\t")
+    
     "'#{value}'"
   end
 

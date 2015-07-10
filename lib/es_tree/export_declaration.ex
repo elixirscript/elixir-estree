@@ -3,7 +3,7 @@ defmodule ESTree.ExportDeclaration do
     type: binary, 
     loc: ESTree.SourceLocation.t | nil,
     declaration: ESTree.Declaration.t,
-    specifiers: [ESTree.ExportSpecifier.t | ESTree.ExportBatchSpecifier.t],
+    specifiers: [ESTree.ExportSpecifier.t],
     default: boolean,
     source: ESTree.Identifier.t | nil
   }
