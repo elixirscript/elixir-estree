@@ -546,14 +546,14 @@ defmodule ESTree.Tools.Generator do
     "#{meta}.#{property}"
   end
 
-  def generate(%ESTree.ImportDeclaration{specifiers: [%ImportDefaultSpecifier{}] = specifiers, source: source}) do
+  def generate(%ESTree.ImportDeclaration{specifiers: [%ESTree.ImportDefaultSpecifier{}] = specifiers, source: source}) do
     specifiers = Enum.map_join(specifiers, ",", &generate(&1))
     source = generate(source)
 
     "import #{specifiers} from #{source};"
   end
 
-  def generate(%ESTree.ImportDeclaration{specifiers: [%ImportNamespaceSpecifier{}] = specifiers, source: source}) do
+  def generate(%ESTree.ImportDeclaration{specifiers: [%ESTree.ImportNamespaceSpecifier{}] = specifiers, source: source}) do
     specifiers = Enum.map_join(specifiers, ",", &generate(&1))
     source = generate(source)
 
