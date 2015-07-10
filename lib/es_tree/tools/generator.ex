@@ -202,8 +202,8 @@ defmodule ESTree.Tools.Generator do
 
   def generate(%ESTree.VariableDeclaration{kind: kind, declarations: declarations}) do
 
-    ids = Enum.map_join(",", declarations, fn(x) -> generate(x.id) end)
-    inits = Enum.map_join(",", declarations, fn(x) -> generate(x.init) end) 
+    ids = Enum.map_join(declarations, ",",  fn(x) -> generate(x.id) end)
+    inits = Enum.map_join(declarations, ",", fn(x) -> generate(x.init) end) 
 
     "#{to_string(kind)} #{ids} = #{inits};"
   end
