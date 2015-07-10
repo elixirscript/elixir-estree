@@ -3,7 +3,7 @@ defmodule ESTree.Mixfile do
 
   def project do
     [app: :estree,
-     version: "1.0.1",
+     version: "2.0.0-dev",
      elixir: "~> 1.0",
      deps: deps,
      description: description,
@@ -19,7 +19,8 @@ defmodule ESTree.Mixfile do
     [
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.7", only: :dev},
-      {:dialyze, "~> 0.1.3", only: :dev}
+      {:dialyze, "~> 0.1.3", only: :dev},
+      {:shouldi, only: :test}
     ]
   end
 

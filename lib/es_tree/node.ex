@@ -13,8 +13,14 @@ defmodule ESTree.Node do
               ESTree.MethodDefinition.t |
               ESTree.Class.t |
               ESTree.ClassBody.t |
+              ESTree.ImportDeclaration.t |
               ESTree.ImportSpecifier.t |
+              ESTree.ImportDefaultSpecifier.t |
               ESTree.ImportNamespaceSpecifier.t |
+              ESTree.ExportNamedDeclaration.t |
               ESTree.ExportSpecifier.t |
-              ESTree.TemplateElement.t
+              ESTree.ExportDefaultDeclaration.t |
+              ESTree.ExportAllDeclaration.t |
+              ESTree.TemplateElement.t |
+              ESTree.Super.t
 end 

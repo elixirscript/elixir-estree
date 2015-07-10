@@ -1,4 +1,4 @@
-defmodule ESTree.Builder do
+defmodule ESTree.Tools.Builder do
   @moduledoc """
   Functions to make building the Nodes easier
   """
@@ -21,16 +21,15 @@ defmodule ESTree.Builder do
 
   @spec arrow_function_expression(
     [ESTree.Pattern.t], 
-    [ ESTree.Expression.t ], 
-    ESTree.Identifier.t | nil, 
+    [ESTree.Expression.t], 
     ESTree.BlockStatement.t | ESTree.Expression.t,
     boolean,
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ArrowFunctionExpression.t
-  def arrow_function_expression(params, defaults, body, rest \\ nil, generator \\ false, expression \\ false, loc \\ nil) do
+  def arrow_function_expression(params, defaults, body, generator \\ false, expression \\ false, loc \\ nil) do
     %ESTree.ArrowFunctionExpression{ 
-      params: params, defaults: defaults, rest: rest, 
+      params: params, defaults: defaults, 
       body: body, generator: generator, expression: expression, loc: loc 
     }
   end 
@@ -125,11 +124,12 @@ defmodule ESTree.Builder do
 
   @spec class_expression(
     ESTree.ClassBody.t,
+    ESTree.Expression.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ClassExpression.t
-  def class_expression(body, loc \\ nil) do
+  def class_expression(body, superClass \\ nil,  loc \\ nil) do
     %ESTree.ClassExpression{ 
-      body: body, loc: loc
+      body: body, loc: loc, superClass: superClass
     }
   end 
 
@@ -193,6 +193,16 @@ defmodule ESTree.Builder do
     }
   end
 
+  @spec export_all_declaration(
+    ESTree.Identifier.t | nil,                          
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.ExportAllDeclaration.t
+  def export_all_declaration(source \\ nil, loc \\ nil) do
+    %ESTree.ExportAllDeclaration{ 
+      loc: loc, source: source
+    }
+  end
+
   @spec export_declaration(
     ESTree.Declaration.t,
     [ESTree.ExportSpecifier.t | ESTree.ExportBatchSpecifier.t],
@@ -206,22 +216,38 @@ defmodule ESTree.Builder do
     }
   end
 
+  @spec export_default_declaration(
+    ESTree.Declaration.t | ESTree.Expression.t,                    
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.ExportDefaultDeclaration.t
+  def export_default_declaration(declaration \\ nil, loc \\ nil) do
+    %ESTree.ExportDefaultDeclaration{ 
+      loc: loc, declaration: declaration
+    }
+  end
+
+  @spec export_named_declaration(
+    ESTree.Declaration.t | nil,
+    [ESTree.ExportSpecifier],
+    ESTree.Literal.t | nil,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.ExportNamedDeclaration.t
+  def export_named_declaration(declaration \\ nil, specifiers, source \\ nil, loc \\ nil) do
+    %ESTree.ExportNamedDeclaration{ 
+      declaration: declaration, specifiers: specifiers,
+      source: source, loc: loc
+    }
+  end
+
   @spec export_specifier(
     ESTree.Identifier.t,
     ESTree.Identifier.t | nil,    
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportSpecifier.t
-  def export_specifier(id, name \\ nil, loc \\ nil) do
+  def export_specifier(local, exported \\ nil, loc \\ nil) do
     %ESTree.ExportSpecifier{ 
-      id: id, name: name, loc: loc
+      local: local, exported: exported, loc: loc
     }
-  end
-
-  @spec export_batch_specifier(   
-    ESTree.SourceLocation.t | nil
-  ) :: ESTree.ExportBatchSpecifier.t
-  def export_batch_specifier(loc \\ nil) do
-    %ESTree.ExportBatchSpecifier{loc: loc}
   end
 
   @spec expression_statement(
@@ -274,33 +300,33 @@ defmodule ESTree.Builder do
   @spec function_declaration(
     ESTree.Identifier.t,
     [ESTree.Pattern.t], 
-    [ ESTree.Expression.t ], 
+    [ESTree.Expression.t], 
     ESTree.BlockStatement.t,
-    ESTree.Identifier.t | nil,
     boolean,
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.FunctionDeclaration.t
-  def function_declaration(id, params, defaults, body, rest \\ nil, generator \\ false, expression \\ false, loc \\ nil) do
+  def function_declaration(id, params, defaults, body, generator \\ false, expression \\ false, loc \\ nil) do
     %ESTree.FunctionDeclaration{ 
-      id: id, params: params, defaults: defaults, rest: rest, 
-      body: body, generator: generator, expression: expression, loc: loc 
+      id: id, params: params, defaults: defaults, 
+      body: body, generator: generator,
+      expression: expression, loc: loc 
     }
   end 
 
   @spec function_expression(
     [ESTree.Pattern.t], 
-    [ ESTree.Expression.t ], 
-    ESTree.Identifier.t | nil, 
+    [ ESTree.Expression.t ],
     ESTree.BlockStatement.t,
     boolean,
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.FunctionExpression.t
-  def function_expression(params, defaults, body, rest \\ nil, generator \\ false, expression \\ false, loc \\ nil) do
+  def function_expression(params, defaults, body, generator \\ false, expression \\ false, loc \\ nil) do
     %ESTree.FunctionExpression{ 
-      params: params, defaults: defaults, rest: rest, 
-      body: body, generator: generator, expression: expression, loc: loc 
+      params: params, defaults: defaults,
+      body: body, generator: generator,
+      expression: expression, loc: loc 
     }
   end 
 
@@ -337,15 +363,13 @@ defmodule ESTree.Builder do
     }
   end
 
-  @spec import_specifier(
+  @spec import_default_specifier(
     ESTree.Identifier.t,
-    ESTree.Identifier.t | nil,
-    boolean,
     ESTree.SourceLocation.t | nil
-  ) :: ESTree.ImportSpecifier.t
-  def import_specifier(id, name \\ nil, default \\ false, loc \\ nil) do
-    %ESTree.ImportSpecifier{ 
-      id: id, name: name, default: default, loc: loc
+  ) :: ESTree.ImportDefaultSpecifier.t
+  def import_default_specifier(local, loc \\ nil) do
+    %ESTree.ImportDefaultSpecifier{ 
+      local: local, loc: loc
     }
   end
 
@@ -353,19 +377,20 @@ defmodule ESTree.Builder do
     ESTree.Identifier.t,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ImportNamespaceSpecifier.t
-  def import_namespace_specifier(id, loc \\ nil) do
+  def import_namespace_specifier(local, loc \\ nil) do
     %ESTree.ImportNamespaceSpecifier{ 
-      id: id, loc: loc
+      local: local, loc: loc
     }
   end
 
-  @spec import_default_specifier(
+  @spec import_specifier(
     ESTree.Identifier.t,
+    ESTree.Identifier.t | nil,
     ESTree.SourceLocation.t | nil
-  ) :: ESTree.ImportDefaultSpecifier.t
-  def import_default_specifier(id, loc \\ nil) do
-    %ESTree.ImportDefaultSpecifier{ 
-      id: id, loc: loc
+  ) :: ESTree.ImportSpecifier.t
+  def import_specifier(local, imported \\ nil, loc \\ nil) do
+    %ESTree.ImportSpecifier{ 
+      local: local, imported: imported, loc: loc
     }
   end
 
@@ -404,7 +429,7 @@ defmodule ESTree.Builder do
   end
 
   @spec member_expression(
-    ESTree.Expression.t, 
+     ESTree.Expression.t | ESTree.Super.t, 
     ESTree.Identifier.t | ESTree.Expression.t,
     boolean,
     ESTree.SourceLocation.t | nil
@@ -415,15 +440,26 @@ defmodule ESTree.Builder do
     }
   end
 
+  @spec meta_property(
+    ESTree.Identifier.t, 
+    ESTree.Identifier.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.MetaProperty.t
+  def meta_property(meta, property, loc \\ nil) do
+    %ESTree.MetaProperty{ 
+      meta: meta, property: property, loc: loc
+    }
+  end
+
   @spec method_definition(
     ESTree.Identifier.t, 
     ESTree.FunctionExpression.t,
-    :"" | :get | :set,
+    :constructor | :method | :get | :set,
     boolean,
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.MethodDefinition.t
-  def method_definition(key, value, kind \\ :"", computed \\ false, static \\ false, loc \\ nil) do
+  def method_definition(key, value, kind \\ :method, computed \\ false, static \\ false, loc \\ nil) do
     %ESTree.MethodDefinition{ 
       key: key, value: value, kind: kind, computed: computed, static: static, loc: loc
     }
@@ -451,7 +487,7 @@ defmodule ESTree.Builder do
   end 
 
   @spec object_pattern(
-    [ESTree.ObjectPatternProperty.t],
+    [ESTree.Property.t],
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ObjectPattern.t
   def object_pattern(properties, loc \\ nil) do
@@ -459,16 +495,6 @@ defmodule ESTree.Builder do
       properties: properties, loc: loc
     }
   end 
-
-  @spec object_pattern_property(
-    ESTree.Literal.t | ESTree.Identifier.t,
-    ESTree.Pattern.t
-  ) :: ESTree.ObjectPatternProperty.t
-  def object_pattern_property(key, value) do
-    %ESTree.ObjectPatternProperty{ 
-      key: key, value: value
-    }
-  end
 
   @spec position(
     pos_integer,
@@ -481,24 +507,30 @@ defmodule ESTree.Builder do
   end
 
   @spec program(
-    [ESTree.Statement.t ],
+    [ESTree.Statement.t],
+    :script | :module,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.Program.t
-  def program(body, loc \\ nil) do
+  def program(body, sourceType \\ :script, loc \\ nil) do
     %ESTree.Program{ 
-      body: body, loc: loc
+      body: body, loc: loc, sourceType: sourceType
     }
   end
 
   @spec property(
-    ESTree.Literal.t | ESTree.Identifier.t, 
+    ESTree.Expression.t, 
     ESTree.Expression.t ,
     :init | :get | :set,
+    boolean,
+    boolean,
+    boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.Property.t
-  def property(key, value, kind \\ :init, loc \\ nil) do
+  def property(key, value, kind \\ :init, method \\ false, shorthand \\ false, computed \\false, loc \\ nil) do
     %ESTree.Property{ 
-      key: key, value: value, kind: kind, loc: loc
+      key: key, value: value,
+      kind: kind, shorthand: shorthand, method: method,
+      loc: loc, computed: computed
     }
   end
 
@@ -509,6 +541,16 @@ defmodule ESTree.Builder do
   def regex(pattern, flags) do
     %ESTree.Regex{ 
       pattern: pattern, flags: flags
+    }
+  end
+
+  @spec rest_element(
+    ESTree.Expression.t | nil,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.RestElement.t
+  def rest_element(argument, loc \\ nil) do
+    %ESTree.RestElement{ 
+      argument: argument, loc: loc
     }
   end
 
@@ -540,6 +582,25 @@ defmodule ESTree.Builder do
   def source_location(source, start, the_end) do
     %ESTree.SourceLocation{ 
       source: source, start: start, end: the_end
+    }
+  end
+
+  @spec spread_element(
+    ESTree.Expression.t | nil,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.SpreadElement.t
+  def spread_element(argument, loc \\ nil) do
+    %ESTree.SpreadElement{ 
+      argument: argument, loc: loc
+    }
+  end
+
+  @spec super(
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.Super.t
+  def super(loc \\ nil) do
+    %ESTree.Super{ 
+      loc: loc
     }
   end
 
@@ -624,7 +685,7 @@ defmodule ESTree.Builder do
     ESTree.BlockStatement.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.TryStatement.t
-  def try_statement(block, handler, finalizer, loc \\ nil) do
+  def try_statement(block, handler, finalizer \\ nil, loc \\ nil) do
     %ESTree.TryStatement{ 
       block: block, handler: handler, finalizer: finalizer, loc: loc
     }
@@ -700,12 +761,13 @@ defmodule ESTree.Builder do
   end
 
   @spec yield_expression(
-    ESTree.Expression.t | nil, 
+    ESTree.Expression.t | nil,
+    boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.YieldExpression.t
-  def yield_expression(argument \\ nil, loc \\ nil) do
+  def yield_expression(argument \\ nil, delegate \\ false,  loc \\ nil) do
     %ESTree.YieldExpression{ 
-      argument: argument, loc: loc
+      argument: argument, loc: loc, delegate: delegate
     }
   end
 end

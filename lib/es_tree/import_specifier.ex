@@ -2,13 +2,11 @@ defmodule ESTree.ImportSpecifier do
   @type t :: %ESTree.ImportSpecifier{ 
     type: binary, 
     loc: ESTree.SourceLocation.t | nil,
-    id: ESTree.Identifier.t,
-    name: ESTree.Identifier.t | nil,
-    default: boolean
+    local: ESTree.Identifier.t,
+    imported: ESTree.Identifier.t
   }
   defstruct type: "ImportSpecifier", 
             loc: nil, 
-            id: %ESTree.Identifier{},
-            name: nil,
-            default: false
+            local: %ESTree.Identifier{},
+            imported: %ESTree.Identifier{}
 end 

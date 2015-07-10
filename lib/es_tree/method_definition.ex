@@ -4,7 +4,7 @@ defmodule ESTree.MethodDefinition do
     loc: ESTree.SourceLocation.t | nil,
     key: ESTree.Identifier.t,
     value: ESTree.FunctionExpression.t,
-    kind: :"" | :get | :set,
+    kind: :contructor | :method | :get | :set,
     computed: boolean,
     static: boolean
   }

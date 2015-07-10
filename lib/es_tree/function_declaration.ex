@@ -5,8 +5,7 @@ defmodule ESTree.FunctionDeclaration do
     id: ESTree.Identifier.t,
     params: [ESTree.Pattern.t ],
     defaults: [ ESTree.Expression.t  ],
-    rest: ESTree.Identifier.t | nil,
-    body: ESTree.BlockStatement.t,
+    body: ESTree.BlockStatement.t | ESTree.Expression.t,
     generator: boolean,
     expression: boolean  
   }
@@ -15,7 +14,6 @@ defmodule ESTree.FunctionDeclaration do
             id: %ESTree.Identifier{},
             params: [],
             defaults: [],
-            rest: nil,
             body: %ESTree.BlockStatement{},
             generator: false,
             expression: false  

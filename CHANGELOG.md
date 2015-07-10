@@ -1,3 +1,12 @@
+# v2.0.0-dev
+
+* Enhancements
+  * Updated to latest ESTree Spec
+  * Added ESTree.Tools.Generator to turn JavaScript AST into code
+
+* Breaking
+  * ESTree.Builder is now ESTree.Tools.Builder
+
 # v1.0.1
 
 * Enhancements

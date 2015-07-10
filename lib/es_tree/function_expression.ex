@@ -4,7 +4,6 @@ defmodule ESTree.FunctionExpression do
     loc: ESTree.SourceLocation.t | nil,
     params: [ESTree.Pattern.t],
     defaults: [ ESTree.Expression.t  ],
-    rest: ESTree.Identifier.t | nil,
     body: ESTree.BlockStatement.t,
     generator: boolean,
     expression: boolean  
@@ -13,7 +12,6 @@ defmodule ESTree.FunctionExpression do
             loc: nil, 
             params: [],
             defaults: [],
-            rest: nil,
             body: %ESTree.BlockStatement{},
             generator: false,
             expression: false  
