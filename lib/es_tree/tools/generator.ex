@@ -41,8 +41,7 @@ defmodule ESTree.Tools.Generator do
   end
   
   def generate(%ESTree.Literal{value: value}) when is_binary(value) do
-    value = String.replace(value, "\n", "\\n")
-    |> String.replace("\t", "\\t")
+    value = convert_string_characters(value)
     
     "'#{value}'"
   end
@@ -644,6 +643,51 @@ defmodule ESTree.Tools.Generator do
   def generate(%ESTree.ExportAllDeclaration{source: source}) do
     source = generate(source)
     "export * from #{source};"
+  end
+
+  def generate(%ESTree.TaggedTemplateExpression{tag: tag, quasi: quasi}) do
+    tag = generate(tag)
+    quasi = generate(quasi)
+
+    "#{tag} #{quasi}"
+  end
+
+  def generate(%ESTree.TemplateLiteral{expressions: [], quasis: []}) do
+    "``"
+  end
+
+  def generate(%ESTree.TemplateLiteral{expressions: [expression], quasis: []}) do
+    expression = generate(expression)
+    "`${#{expression}}`"
+  end
+
+  def generate(%ESTree.TemplateLiteral{expressions: [], quasis: [quasi]}) do
+    quasi = convert_string_characters(quasi.value.value)
+    "`#{quasi}`"
+  end
+
+  def generate(%ESTree.TemplateLiteral{expressions: expressions, quasis: quasis}) do
+    elements = expressions ++ quasis
+
+    literal = Enum.sort(elements, fn(one, two) ->
+      one.loc.start.column < two.loc.start.column
+    end)
+    |> Enum.reduce("", fn(el, str) ->
+      case el do
+        %ESTree.TemplateElement{} ->
+          str <> convert_string_characters(el.value.value)
+        _ ->
+          str <> "${#{generate(el)}}"
+      end
+    end)
+
+
+    "`#{literal}`"
+  end
+
+  defp convert_string_characters(str) do
+    String.replace(str, "\n", "\\n")
+        |> String.replace("\t", "\\t")
   end
   
   defp params_and_defaults(params, []) do
