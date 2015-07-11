@@ -1,9 +1,6 @@
 Elixir-ESTree
 ============
 
-Defines structs that represent the SpiderMonkey AST definitions. Mostly following the ESTree Spec. Targets ES6 definitions. Some gaps filled in from 
-what acorn produces for ES6 currently. 
-
-[Parser API docs](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Parser_API)
+Defines structs that represent the ESTree AST definitions. Also includes a JavaScript AST to JavaScript code generator.
 
 [ESTree Spec](https://github.com/estree/estree)
