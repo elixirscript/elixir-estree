@@ -205,7 +205,7 @@ defmodule ESTree.Tools.Builder do
 
   @spec export_declaration(
     ESTree.Declaration.t,
-    [ESTree.ExportSpecifier.t | ESTree.ExportBatchSpecifier.t],
+    [ESTree.ExportSpecifier.t],
     boolean,
     ESTree.Identifier.t | nil,
     ESTree.SourceLocation.t | nil
@@ -217,7 +217,7 @@ defmodule ESTree.Tools.Builder do
   end
 
   @spec export_default_declaration(
-    ESTree.Declaration.t | ESTree.Expression.t,                
+    ESTree.Declaration.t | ESTree.Expression.t | nil,                
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ExportDefaultDeclaration.t
   def export_default_declaration(declaration \\ nil, loc \\ nil) do
@@ -526,7 +526,7 @@ defmodule ESTree.Tools.Builder do
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.Property.t
-  def property(key, value, kind \\ :init, method \\ false, shorthand \\ false, computed \\false, loc \\ nil) do
+  def property(key, value, kind \\ :init, shorthand \\ false, method \\ false, computed \\false, loc \\ nil) do
     %ESTree.Property{ 
       key: key, value: value,
       kind: kind, shorthand: shorthand, method: method,

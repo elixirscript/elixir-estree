@@ -19,7 +19,7 @@ defmodule ESTree.Mixfile do
     [
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.7", only: :dev},
-      {:dialyze, "~> 0.1.3", only: :dev},
+      {:dialyze, "~> 0.2", only: :dev},
       {:shouldi, only: :test}
     ]
   end

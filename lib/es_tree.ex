@@ -18,4 +18,6 @@ defmodule ESTree do
                                 :"|=" | :"^=" | :"&="
 
   @type update_operator  ::  :++ | :--
+
+  @type operator :: unary_operator | binary_operator | logical_operator | assignment_operator | update_operator
 end

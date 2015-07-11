@@ -17,5 +17,6 @@ defmodule ESTree.Statement do
               ESTree.ForInStatement.t |
               ESTree.ForOfStatement.t |
               ESTree.DebuggerStatement.t |
+              ESTree.ConditionalStatement.t |
               ESTree.Declaration.t
 end 

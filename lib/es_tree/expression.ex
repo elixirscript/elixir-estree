@@ -10,7 +10,6 @@ defmodule ESTree.Expression do
               ESTree.AssignmentExpression.t |
               ESTree.UpdateExpression.t |
               ESTree.LogicalExpression.t |
-              ESTree.ConditionalExpression.t |
               ESTree.NewExpression.t |
               ESTree.CallExpression.t |
               ESTree.MemberExpression.t |
