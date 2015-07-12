@@ -203,19 +203,6 @@ defmodule ESTree.Tools.Builder do
     }
   end
 
-  @spec export_declaration(
-    ESTree.Declaration.t,
-    [ESTree.ExportSpecifier.t],
-    boolean,
-    ESTree.Identifier.t | nil,
-    ESTree.SourceLocation.t | nil
-  ) :: ESTree.ExportDeclaration.t
-  def export_declaration(declaration, specifiers \\ [], default \\ false, source \\ nil, loc \\ nil) do
-    %ESTree.ExportDeclaration{ 
-      declaration: declaration, specifiers: specifiers, default: default, source: source, loc: loc
-    }
-  end
-
   @spec export_default_declaration(
     ESTree.Declaration.t | ESTree.Expression.t | nil,                
     ESTree.SourceLocation.t | nil

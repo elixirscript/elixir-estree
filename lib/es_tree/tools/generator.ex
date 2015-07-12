@@ -13,8 +13,6 @@ defmodule ESTree.Tools.Generator do
     :">>>=" , :"|=" , :"^=" , :"&=", :++, :--
   ]
 
-  @indent "    "
-
   @spec generate(ESTree.operator | ESTree.Node.t) :: binary
   def generate(operator) when operator in @operators do
     to_string(operator)
@@ -557,21 +555,21 @@ defmodule ESTree.Tools.Generator do
   end
 
   def generate(%ESTree.ImportDeclaration{specifiers: [%ESTree.ImportDefaultSpecifier{}] = specifiers, source: source}) do
-    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    specifiers = Enum.map_join(specifiers, ", ", &generate(&1))
     source = generate(source)
 
     "import #{specifiers} from #{source};"
   end
 
   def generate(%ESTree.ImportDeclaration{specifiers: [%ESTree.ImportNamespaceSpecifier{}] = specifiers, source: source}) do
-    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    specifiers = Enum.map_join(specifiers, ", ", &generate(&1))
     source = generate(source)
 
     "import #{specifiers} from #{source};"
   end
   
   def generate(%ESTree.ImportDeclaration{specifiers: specifiers, source: source}) do
-    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    specifiers = Enum.map_join(specifiers, ", ", &generate(&1))
     source = generate(source)
 
     "import { #{specifiers} } from #{source};"
@@ -610,17 +608,16 @@ defmodule ESTree.Tools.Generator do
   end
   
   def generate(%ESTree.ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: nil} = ast) do
-    IO.inspect(ast)
-    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    specifiers = Enum.map_join(specifiers, ", ", &generate(&1))
 
-    "export #{specifiers};"
+    "export { #{specifiers} };"
   end
 
   def generate(%ESTree.ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: source}) do
-    specifiers = Enum.map_join(specifiers, ",", &generate(&1))
+    specifiers = Enum.map_join(specifiers, ", ", &generate(&1))
     source = generate(source)
     
-    "export #{specifiers} from #{source};"
+    "export { #{specifiers} } from #{source};"
   end
   
   def generate(%ESTree.ExportSpecifier{local: local, exported: exported}) do
@@ -628,9 +625,9 @@ defmodule ESTree.Tools.Generator do
     exported = generate(exported)
 
     if local == exported do
-      "{#{local}}"
+      "#{local}"
     else
-      "{#{exported} as #{local} }"
+      "#{exported} as #{local}"
     end
   end
 
