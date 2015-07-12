@@ -26,7 +26,8 @@ defmodule ESTree.Mixfile do
 
   defp description do
     """
-    Defines structs that represent the SpiderMonkey AST definitions. Mostly following the ESTree Spec. Targets ES6 definitions
+    Represents the JavaScript AST from the ESTree spec.
+    Includes tools for building the AST and generating code from it.
     """
   end
 
