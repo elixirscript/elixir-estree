@@ -1,4 +1,4 @@
-# v2.0.0-dev
+# v2.0.0
 
 * Enhancements
   * Updated to latest ESTree Spec
