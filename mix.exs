@@ -27,7 +27,7 @@ defmodule ESTree.Mixfile do
   defp description do
     """
     Represents the JavaScript AST from the ESTree spec.
-    Includes tools for building the AST and generating code from it.
+    Includes tools for building an AST and generating code from it.
     """
   end
 
