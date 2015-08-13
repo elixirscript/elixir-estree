@@ -17,7 +17,7 @@ defmodule ESTree.Tools.Generator do
 
   @spec generate(ESTree.operator | ESTree.Node.t, integer) :: binary
   def generate(value, level \\ 0) do
-    "#{indent(level)}#{do_generate(value, level)}"
+    "#{indent(level)}#{do_generate(value, level + 1)}"
   end
 
   def do_generate(operator, level) when operator in @operators do
