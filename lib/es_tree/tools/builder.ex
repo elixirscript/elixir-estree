@@ -630,9 +630,9 @@ defmodule ESTree.Tools.Builder do
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.TemplateElement.t
-  def template_element(value, cooked_value, tail, loc \\ nil) do
+  def template_element(raw, cooked_value, tail, loc \\ nil) do
     %ESTree.TemplateElement{ 
-      value: %{cooked: cooked_value, value: value}, tail: tail, loc: loc
+      value: %{cooked: cooked_value, raw: raw}, tail: tail, loc: loc
     }
   end
 

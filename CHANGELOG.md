@@ -1,3 +1,9 @@
+# v2.0.1
+
+* Enhancements
+  * Changed TemplateElement.value.value to TemplateElement.value.raw
+  * Began adding indentation
+
 # v2.0.0
 
 * Enhancements
