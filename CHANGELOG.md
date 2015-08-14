@@ -3,6 +3,7 @@
 * Enhancements
   * Changed TemplateElement.value.value to TemplateElement.value.raw
   * Began adding indentation
+  * Added empty string for when nil is given to generate
 
 # v2.0.0
 
