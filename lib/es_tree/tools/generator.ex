@@ -20,6 +20,10 @@ defmodule ESTree.Tools.Generator do
     "#{indent(level)}#{do_generate(value, level + 1)}"
   end
 
+  def do_generate(nil, level)do
+    ""
+  end
+
   def do_generate(operator, level) when operator in @operators do
     to_string(operator)
   end
