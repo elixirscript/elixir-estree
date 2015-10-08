@@ -18,5 +18,6 @@ defmodule ESTree.Expression do
               ESTree.Literal.t |
               ESTree.ClassExpression.t |
               ESTree.TemplateLiteral.t |
-              ESTree.TaggedTemplateExpression.t
+              ESTree.TaggedTemplateExpression.t |
+              ESTree.AwaitExpression.t
 end 

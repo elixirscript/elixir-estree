@@ -68,18 +68,20 @@ defmodule ESTree.Tools.Generator do
 
   def do_generate(%ESTree.FunctionDeclaration{} = ast, level) do
     generator = if ast.generator, do: "*", else: ""
+    async = if ast.async, do: "async ", else: ""
     
     params = params_and_defaults(ast.params, ast.defaults)
     id = generate(ast.id)
     
-    "function#{generator} #{id}(#{params})#{generate(ast.body, level + 1)}"
+    "#{async}function#{generator} #{id}(#{params})#{generate(ast.body, level + 1)}"
   end
 
   def do_generate(%ESTree.FunctionExpression{} = ast, level) do
     generator = if ast.generator, do: "*", else: ""
+    async = if ast.async, do: "async ", else: ""
     params = params_and_defaults(ast.params, ast.defaults)
     
-    "function#{generator}(#{params})#{generate(ast.body, level + 1)}"
+    "#{async}function#{generator}(#{params})#{generate(ast.body, level + 1)}"
   end
   
   def do_generate(%ESTree.EmptyStatement{}, level) do
@@ -685,6 +687,10 @@ defmodule ESTree.Tools.Generator do
 
 
     "`#{literal}`"
+  end
+
+  def do_generate(%ESTree.AwaitExpression{ argument: argument, all: all }, level) do
+    "await #{generate(argument)}"
   end
 
   defp convert_string_characters(str) do

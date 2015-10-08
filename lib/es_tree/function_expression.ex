@@ -6,7 +6,8 @@ defmodule ESTree.FunctionExpression do
     defaults: [ ESTree.Expression.t  ],
     body: ESTree.BlockStatement.t,
     generator: boolean,
-    expression: boolean  
+    expression: boolean,
+    async: boolean   
   }
   defstruct type: "FunctionExpression", 
             loc: nil, 
@@ -14,5 +15,6 @@ defmodule ESTree.FunctionExpression do
             defaults: [],
             body: %ESTree.BlockStatement{},
             generator: false,
-            expression: false  
+            expression: false,
+            async: false
 end 

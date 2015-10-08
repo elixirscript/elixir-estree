@@ -46,6 +46,17 @@ defmodule ESTree.Tools.Builder do
     }
   end
 
+  @spec await_expression(
+    ESTree.Expression.t | nil, 
+    boolean,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.AwaitExpression.t
+  def await_expression(argument, all \\ false, loc \\ nil) do
+    %ESTree.AwaitExpression{ 
+      argument: argument, all: all, loc: loc
+    }
+  end
+
   @spec binary_expression(
     ESTree.binary_operator, 
     ESTree.Expression.t, 
@@ -291,12 +302,13 @@ defmodule ESTree.Tools.Builder do
     ESTree.BlockStatement.t,
     boolean,
     boolean,
+    boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.FunctionDeclaration.t
-  def function_declaration(id, params, defaults, body, generator \\ false, expression \\ false, loc \\ nil) do
+  def function_declaration(id, params, defaults, body, generator \\ false, expression \\ false, async \\ false, loc \\ nil) do
     %ESTree.FunctionDeclaration{ 
       id: id, params: params, defaults: defaults, 
-      body: body, generator: generator,
+      body: body, generator: generator, async: async,
       expression: expression, loc: loc 
     }
   end 
@@ -307,12 +319,13 @@ defmodule ESTree.Tools.Builder do
     ESTree.BlockStatement.t,
     boolean,
     boolean,
+    boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.FunctionExpression.t
-  def function_expression(params, defaults, body, generator \\ false, expression \\ false, loc \\ nil) do
+  def function_expression(params, defaults, body, generator \\ false, expression \\ false, async \\ false, loc \\ nil) do
     %ESTree.FunctionExpression{ 
       params: params, defaults: defaults,
-      body: body, generator: generator,
+      body: body, generator: generator, async: async,
       expression: expression, loc: loc 
     }
   end 

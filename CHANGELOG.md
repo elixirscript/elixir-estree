@@ -1,3 +1,9 @@
+# v2.1.0
+
+* Enhancements
+  * Added async field to FunctionDeclaration and FunctionExpression
+  * Added AwaitExpression
+
 # v2.0.1
 
 * Enhancements
