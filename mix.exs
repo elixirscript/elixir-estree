@@ -3,7 +3,7 @@ defmodule ESTree.Mixfile do
 
   def project do
     [app: :estree,
-     version: "2.1.0",
+     version: "2.1.1",
      elixir: "~> 1.0",
      deps: deps,
      description: description,

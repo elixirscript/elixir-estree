@@ -1,3 +1,8 @@
+# v2.1.1
+
+* Enhancements
+  * ESTree.Tools.Generator: Updated yield to account for delegate field
+
 # v2.1.0
 
 * Enhancements

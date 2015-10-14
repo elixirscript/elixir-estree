@@ -458,8 +458,12 @@ defmodule ESTree.Tools.Generator do
     "(#{params})#{generator} => #{generate(ast.body)}"
   end
 
-  def do_generate(%ESTree.YieldExpression{argument: argument}, level) do
+  def do_generate(%ESTree.YieldExpression{argument: argument, delegate: false}, level) do
     "yield #{generate(argument)}"
+  end
+
+  def do_generate(%ESTree.YieldExpression{argument: argument, delegate: true}, level) do
+    "yield* #{generate(argument)}"
   end
 
   def do_generate(%ESTree.ObjectPattern{properties: properties}, level) do
