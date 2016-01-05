@@ -1,3 +1,8 @@
+# v2.1.2
+
+* Bug fixes
+  * ESTree.Tools.Generator: updated UnaryExpression to put space in when operator is :typeof 
+
 # v2.1.1
 
 * Enhancements

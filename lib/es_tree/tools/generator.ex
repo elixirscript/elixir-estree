@@ -291,6 +291,10 @@ defmodule ESTree.Tools.Generator do
     Enum.map_join(expressions, ",", &generate(&1))
   end
 
+  def do_generate(%ESTree.UnaryExpression{operator: :typeof, prefix: true, argument: argument}, level) do
+    "#{generate(:typeof)} #{generate(argument)}"
+  end
+
   def do_generate(%ESTree.UnaryExpression{operator: operator, prefix: true, argument: argument}, level) do
     "#{generate(operator)}#{generate(argument)}"
   end
