@@ -770,4 +770,115 @@ defmodule ESTree.Tools.Builder do
       argument: argument, loc: loc, delegate: delegate
     }
   end
+
+
+  @spec jsx_identifier(
+    binary,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXIdentifier.t
+  def jsx_identifier(name, loc \\ nil) do
+    %ESTree.JSXIdentifier{ 
+      name: name, loc: loc
+    }
+  end
+
+
+  @spec jsx_member_expression(
+    ESTree.JSXMemberExpression.t | ESTree.JSXIdentifier.t,
+    ESTree.JSXIdentifier.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.MemberExpression.t
+  def jsx_member_expression(object, property, loc \\ nil) do
+    %ESTree.JSXMemberExpression{ 
+      object: object, property: property, loc: loc
+    }
+  end
+
+  @spec jsx_namespaced_name(
+    ESTree.JSXIdentifier.t,
+    ESTree.JSXIdentifier.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXNamespacedName.t
+  def jsx_namespaced_name(namespace, name, loc \\ nil) do
+    %ESTree.JSXNamespacedName{ 
+      namespace: namespace, name: name, loc: loc
+    }
+  end
+
+  @spec jsx_empty_expression(
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXEmptyExpression.t
+  def jsx_empty_expression(loc \\ nil) do
+    %ESTree.JSXEmptyExpression{ 
+      loc: loc
+    }
+  end
+
+  @spec jsx_expression_container(
+    ESTree.Expression.t | ESTree.JSXEmptyExpression.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXExpressionContainer.t
+  def jsx_expression_container(expression, loc \\ nil) do
+    %ESTree.JSXExpressionContainer{ 
+      expression: expression, loc: loc
+    }
+  end
+
+
+  @spec jsx_opening_element(
+    ESTree.JSXIdentifier.t | ESTree.JSXMemberExpression.t | ESTree.JSXNamespacedName.t,
+    [ ESTree.JSXAttribute.t | ESTree.JSXSpreadAttribute.t ],
+    boolean,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXOpeningElement.t
+  def jsx_opening_element(name, attributes, selfClosing \\ false, loc \\ nil) do
+    %ESTree.JSXOpeningElement{ 
+      name: name, attributes: attributes, selfClosing: selfClosing, loc: loc
+    }
+  end
+
+
+  @spec jsx_closing_element(
+    ESTree.JSXIdentifier.t | ESTree.JSXMemberExpression.t | ESTree.JSXNamespacedName.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXClosingElement.t
+  def jsx_closing_element(name, loc \\ nil) do
+    %ESTree.JSXClosingElement{ 
+      name: name, loc: loc
+    }
+  end
+
+
+  @spec jsx_attribute(
+    ESTree.JSXIdentifier.t | ESTree.JSXNamespacedName.t,
+    ESTree.Literal.t | ESTree.JSXExpressionContainer.t | ESTree.JSXElement.t | nil,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXAttribute.t
+  def jsx_attribute(name, value \\ nil, loc \\ nil) do
+    %ESTree.JSXAttribute{ 
+      name: name, value: value, loc: loc
+    }
+  end
+
+  @spec jsx_spread_attribute(
+    ESTree.Expression.t | nil,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.SpreadElement.t
+  def jsx_spread_attribute(argument, loc \\ nil) do
+    %ESTree.JSXSpreadAttribute{ 
+      argument: argument, loc: loc
+    }
+  end
+
+  @spec jsx_element(
+    ESTree.JSXOpeningElement.t,
+    [ESTree.Literal.t | ESTree.JSXExpressionContainer.t | ESTree.JSXElement.t],
+    ESTree.JSXClosingElement.t | nil,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXElement.t
+  def jsx_element(openingElement, children, closingElement \\ nil, loc \\ nil) do
+    %ESTree.JSXElement{ 
+      openingElement: openingElement, children: children, closingElement: closingElement, loc: loc
+    }
+  end
 end
