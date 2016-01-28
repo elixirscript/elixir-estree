@@ -701,6 +701,46 @@ defmodule ESTree.Tools.Generator do
     "await #{generate(argument)}"
   end
 
+  def do_generate(%ESTree.JSXIdentifier{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXMemberExpression{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXNamespacedName{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXEmptyExpression{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXExpressionContainer{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXOpeningElement{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXClosingElement{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXAttribute{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXSpreadAttribute{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXElement{}, level) do
+    ""
+  end
+
   defp convert_string_characters(str) do
     String.replace(str, "\n", "\\n")
         |> String.replace("\t", "\\t")
