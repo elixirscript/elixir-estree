@@ -1,3 +1,7 @@
+# v2.2.0-dev
+* Enhancements:
+  * Added structs for JSX AST
+
 # v2.1.2
 
 * Bug fixes
