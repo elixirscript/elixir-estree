@@ -701,6 +701,48 @@ defmodule ESTree.Tools.Generator do
     "await #{generate(argument)}"
   end
 
+  def do_generate(%ESTree.JSXIdentifier{ name: name }, level) do
+    "#{name}"
+  end
+
+  def do_generate(%ESTree.JSXMemberExpression{ object: object, property: property }, level) do
+    "#{ generate(object) }.#{ generate(property) }"
+  end
+
+  def do_generate(%ESTree.JSXNamespacedName{ namespace: namespace, name: name }, level) do
+    "#{ generate(namespace) }:#{ generate(name) }"
+  end
+
+  def do_generate(%ESTree.JSXEmptyExpression{}, level) do
+    ""
+  end
+
+  def do_generate(%ESTree.JSXExpressionContainer{ expression: expression }, level) do
+    "{#{ generate(expression) }}"
+  end
+
+  def do_generate(%ESTree.JSXOpeningElement{ name: name, attributes: attributes, selfClosing: selfClosing }, level) do
+    selfClosing = if selfClosing, do: "/", else: ""
+
+    "<#{generate(name)} #{ Enum.map(attributes, &generate(&1)) |> Enum.join(" ") }#{selfClosing}>"
+  end
+
+  def do_generate(%ESTree.JSXClosingElement{ name: name }, level) do
+    "</#{ generate(name) }>"
+  end
+
+  def do_generate(%ESTree.JSXAttribute{ name: name, value: value }, level) do
+    "#{ generate(name) }=#{ generate(value) }"
+  end
+
+  def do_generate(%ESTree.JSXSpreadAttribute{ argument: argument }, level) do
+    "{...#{ generate(argument) }}"
+  end
+
+  def do_generate(%ESTree.JSXElement{ openingElement: openingElement, children: children, closingElement: closingElement }, level) do
+    "#{ generate(openingElement) } #{ Enum.map(children, &generate(&1, level + 1)) |> Enum.join(" ") } #{ generate(closingElement) }"
+  end
+
   defp convert_string_characters(str) do
     String.replace(str, "\n", "\\n")
         |> String.replace("\t", "\\t")
