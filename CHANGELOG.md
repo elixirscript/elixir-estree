@@ -1,4 +1,4 @@
-# v2.2.0-dev
+# v2.2.0
 * Enhancements:
   * Added structs for JSX AST
 
