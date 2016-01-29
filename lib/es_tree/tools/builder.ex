@@ -831,7 +831,7 @@ defmodule ESTree.Tools.Builder do
     boolean,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.JSXOpeningElement.t
-  def jsx_opening_element(name, attributes, selfClosing \\ false, loc \\ nil) do
+  def jsx_opening_element(name, attributes \\ [], selfClosing \\ false, loc \\ nil) do
     %ESTree.JSXOpeningElement{ 
       name: name, attributes: attributes, selfClosing: selfClosing, loc: loc
     }
@@ -876,7 +876,7 @@ defmodule ESTree.Tools.Builder do
     ESTree.JSXClosingElement.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.JSXElement.t
-  def jsx_element(openingElement, children, closingElement \\ nil, loc \\ nil) do
+  def jsx_element(openingElement, children \\ [], closingElement \\ nil, loc \\ nil) do
     %ESTree.JSXElement{ 
       openingElement: openingElement, children: children, closingElement: closingElement, loc: loc
     }

@@ -4,6 +4,8 @@ Defines structs that represent the JavaScript AST nodes from the ESTree spec.
 
 [ESTree Spec](https://github.com/estree/estree)
 
+[JSX AST Spec](https://github.com/facebook/jsx)
+
 Also includes a JavaScript AST to JavaScript code generator.
 
 ```elixir
@@ -16,5 +18,23 @@ ast = Builder.array_expression([
 ])
 
 Generator.generate(ast)
-#"[1, a]"
+# "[1, a]"
+
+#jsx ast and generation
+    ast = Builder.jsx_element(
+      Builder.jsx_opening_element(
+        Builder.jsx_identifier(
+          "Test"
+        )
+      ),
+      [],
+      Builder.jsx_closing_element(
+        Builder.jsx_identifier(
+          "Test"
+        )
+      )
+    )
+    
+Generator.generate(ast)
+# "<Test></Test>"
 ```
