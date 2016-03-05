@@ -456,9 +456,9 @@ defmodule ESTree.Tools.Generator do
     else
       ""
     end
-    
+
     params = params_and_defaults(ast.params, ast.defaults)
-    
+
     "(#{params})#{generator} => #{generate(ast.body)}"
   end
 
@@ -472,6 +472,11 @@ defmodule ESTree.Tools.Generator do
 
   def do_generate(%ESTree.ObjectPattern{properties: properties}, level) do
      "{" <> Enum.map_join(properties, ",", &generate(&1)) <> "}"
+  end
+
+  def do_generate(%ESTree.AssignmentProperty{ value: value }, _) do
+    value = generate(value)
+    "#{value}"
   end
 
   def do_generate(%ESTree.ArrayPattern{elements: elements}, level) do

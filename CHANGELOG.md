@@ -1,3 +1,8 @@
+# v2.3.0
+* Enhancements:
+  * Added AssignmentProperty for use with ObjectPattern
+  * Updated some typespecs to reflect updates in ESTree spec
+
 # v2.2.0
 * Enhancements:
   * Added structs for JSX AST

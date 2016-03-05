@@ -8,8 +8,6 @@ defmodule ESTree.Node do
               ESTree.Pattern.t |
               ESTree.SwitchCase.t |
               ESTree.CatchClause.t |
-              ESTree.Identifier.t |
-              ESTree.Literal.t |
               ESTree.MethodDefinition.t |
               ESTree.Class.t |
               ESTree.ClassBody.t |

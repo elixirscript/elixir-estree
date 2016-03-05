@@ -28,23 +28,34 @@ defmodule ESTree.Tools.Builder do
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ArrowFunctionExpression.t
   def arrow_function_expression(params, defaults, body, generator \\ false, expression \\ false, loc \\ nil) do
-    %ESTree.ArrowFunctionExpression{ 
-      params: params, defaults: defaults, 
-      body: body, generator: generator, expression: expression, loc: loc 
+    %ESTree.ArrowFunctionExpression{
+      params: params, defaults: defaults,
+      body: body, generator: generator, expression: expression, loc: loc
     }
   end 
 
   @spec assignment_expression(
-    ESTree.assignment_operator, 
-    ESTree.Pattern.t | ESTree.Expression.t, 
+    ESTree.assignment_operator,
+    ESTree.Pattern.t,
     ESTree.Expression.t,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.AssignmentExpression.t
   def assignment_expression(operator, left, right, loc \\ nil) do
-    %ESTree.AssignmentExpression{ 
+    %ESTree.AssignmentExpression{
       operator: operator, left: left, right: right, loc: loc
     }
   end
+
+  @spec assignment_property(
+    ESTree.Pattern.t,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.AssignmentProperty.t
+  def assignment_property(value, loc \\ nil) do
+    %ESTree.AssignmentProperty{
+      value: value, loc: loc
+    }
+  end
+
 
   @spec await_expression(
     ESTree.Expression.t | nil, 
@@ -259,19 +270,19 @@ defmodule ESTree.Tools.Builder do
   end
 
   @spec for_in_statement(
-    ESTree.VariableDeclaration.t | ESTree.Expression.t,
+    ESTree.VariableDeclaration.t | ESTree.Pattern.t,
     ESTree.Expression.t,
     ESTree.Statement.t,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.ForInStatement.t
   def for_in_statement(left, right, body, loc \\ nil) do
-    %ESTree.ForInStatement{ 
+    %ESTree.ForInStatement{
       left: left, right: right, body: body, loc: loc
     }
   end
 
   @spec for_of_statement(
-    ESTree.VariableDeclaration.t | ESTree.Expression.t,
+    ESTree.VariableDeclaration.t | ESTree.Pattern.t,
     ESTree.Expression.t,
     ESTree.Statement.t,
     ESTree.SourceLocation.t | nil

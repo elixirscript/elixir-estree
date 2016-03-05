@@ -1,14 +1,14 @@
 defmodule ESTree.AssignmentExpression do
-  @type t :: %ESTree.AssignmentExpression{ 
-    type: binary, 
+  @type t :: %ESTree.AssignmentExpression{
+    type: binary,
     loc: ESTree.SourceLocation.t | nil,
     operator: ESTree.assignment_operator,
-    left: ESTree.Pattern.t | ESTree.Expression.t, 
+    left: ESTree.Pattern.t,
     right: ESTree.Expression.t
   }
-  defstruct type: "AssignmentExpression", 
-            loc: nil, 
+  defstruct type: "AssignmentExpression",
+            loc: nil,
             operator: nil,
             left: %ESTree.EmptyExpression{},
-            right: %ESTree.EmptyExpression{}            
+            right: %ESTree.EmptyExpression{}
 end 

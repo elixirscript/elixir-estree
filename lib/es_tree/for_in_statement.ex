@@ -1,8 +1,8 @@
 defmodule ESTree.ForInStatement do
-  @type t :: %ESTree.ForInStatement{ 
-    type: binary, 
+  @type t :: %ESTree.ForInStatement{
+    type: binary,
     loc: ESTree.SourceLocation.t | nil,
-    left: ESTree.VariableDeclaration.t | ESTree.Expression.t ,
+    left: ESTree.VariableDeclaration.t | ESTree.Pattern.t ,
     right: ESTree.Expression.t ,
     body: ESTree.Statement.t
   }
