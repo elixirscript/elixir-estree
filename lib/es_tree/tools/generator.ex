@@ -16,8 +16,8 @@ defmodule ESTree.Tools.Generator do
   @indent "    "
 
   @spec generate(ESTree.operator | ESTree.Node.t, integer) :: binary
-  def generate(value, level \\ 0) do
-    "#{indent(level)}#{do_generate(value, level + 1)}"
+  def generate(value, level \\ nil) do
+    "#{indent(level)}#{do_generate(value, calculate_next_level(level))}"
   end
 
   def do_generate(nil, level)do
@@ -63,7 +63,7 @@ defmodule ESTree.Tools.Generator do
   end
   
   def do_generate(%ESTree.Program{body: body}, level) do
-    Enum.map_join(body, "\n", &generate(&1, level + 1))
+    Enum.map_join(body, newline(level), &generate(&1, calculate_next_level(level)))
   end
 
   def do_generate(%ESTree.FunctionDeclaration{} = ast, level) do
@@ -73,7 +73,7 @@ defmodule ESTree.Tools.Generator do
     params = params_and_defaults(ast.params, ast.defaults)
     id = generate(ast.id)
     
-    "#{async}function#{generator} #{id}(#{params})#{generate(ast.body, level + 1)}"
+    "#{async}function#{generator} #{id}(#{params})#{generate(ast.body, calculate_next_level(level))}"
   end
 
   def do_generate(%ESTree.FunctionExpression{} = ast, level) do
@@ -81,7 +81,7 @@ defmodule ESTree.Tools.Generator do
     async = if ast.async, do: "async ", else: ""
     params = params_and_defaults(ast.params, ast.defaults)
     
-    "#{async}function#{generator}(#{params})#{generate(ast.body, level + 1)}"
+    "#{async}function#{generator}(#{params})#{generate(ast.body, calculate_next_level(level))}"
   end
   
   def do_generate(%ESTree.EmptyStatement{}, level) do
@@ -89,7 +89,7 @@ defmodule ESTree.Tools.Generator do
   end
   
   def do_generate(%ESTree.BlockStatement{body: body}, level) do
-   "{\n#{indent(level + 1)}" <> Enum.map_join(body, "\n#{indent(level + 1)}", &generate(&1)) <> "\n#{indent(level)}}"
+   "{#{newline(level)}#{indent(calculate_next_level(level))}" <> Enum.map_join(body, "#{newline(level)}#{indent(calculate_next_level(level))}", &generate(&1)) <> "#{newline(level)}#{indent(level)}}"
   end
   
   def do_generate(%ESTree.ExpressionStatement{expression: expression}, level) do
@@ -98,11 +98,11 @@ defmodule ESTree.Tools.Generator do
 
   def do_generate(%ESTree.IfStatement{test: test, consequent: consequent, alternate: alternate}, level) do
     test = generate(test)
-    consequent = generate(consequent, level + 1)
+    consequent = generate(consequent, calculate_next_level(level))
     result = "if(#{test}) #{consequent}"
 
     if alternate do
-      result = result <> " else #{generate(alternate, level + 1)}"
+      result = result <> " else #{generate(alternate, calculate_next_level(level))}"
     end
 
     result
@@ -111,7 +111,7 @@ defmodule ESTree.Tools.Generator do
   def do_generate(%ESTree.LabeledStatement{label: label, body: body}, level) do
     """
     #{generate(label, level)}:
-    #{generate(body, level + 1)}
+    #{generate(body, calculate_next_level(level))}
     """
   end
 
@@ -132,47 +132,47 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.WithStatement{object: object, body: body}, level) do
-    "with(#{generate(object)})#{generate(body, level + 1)}"
+    "with(#{generate(object)})#{generate(body, calculate_next_level(level))}"
   end
 
   def do_generate(%ESTree.SwitchStatement{discriminant: discriminant, cases: cases}, level) do
-    cases = Enum.map_join(cases, "\n", &generate(&1, level + 1))
+    cases = Enum.map_join(cases, newline(level), &generate(&1, calculate_next_level(level)))
     "switch(#{generate(discriminant)}){ #{cases} }"
   end
 
   def do_generate(%ESTree.ReturnStatement{argument: argument}, level) do
-    "return #{generate(argument, level + 1)};"
+    "return #{generate(argument, calculate_next_level(level))};"
   end
 
   def do_generate(%ESTree.ThrowStatement{argument: argument}, level) do
-    "throw #{generate(argument, level + 1)};"
+    "throw #{generate(argument, calculate_next_level(level))};"
   end
 
   def do_generate(%ESTree.TryStatement{block: block, handler: handler, finalizer: nil}, level) do
-    "try#{generate(block, level + 1)}#{generate(handler, level + 1)}"
+    "try#{generate(block, calculate_next_level(level))}#{generate(handler, calculate_next_level(level))}"
   end
 
   def do_generate(%ESTree.TryStatement{block: block, handler: nil, finalizer: finalizer}, level) do
-    "try#{generate(block, level + 1)}finally#{generate(finalizer, level + 1)}"
+    "try#{generate(block, calculate_next_level(level))}finally#{generate(finalizer, calculate_next_level(level))}"
   end
   
   def do_generate(%ESTree.TryStatement{block: block, handler: handler, finalizer: finalizer}, level) do
-    "try#{generate(block, level + 1)}#{generate(handler, level + 1)}finally#{generate(finalizer, level + 1)}"
+    "try#{generate(block, calculate_next_level(level))}#{generate(handler, calculate_next_level(level))}finally#{generate(finalizer, calculate_next_level(level))}"
   end
   
   def do_generate(%ESTree.WhileStatement{test: test, body: body}, level) do
-    "while(#{generate(test)}) #{generate(body, level + 1)}"
+    "while(#{generate(test)}) #{generate(body, calculate_next_level(level))}"
   end
 
   def do_generate(%ESTree.DoWhileStatement{test: test, body: body}, level) do
-    "do #{generate(body, level + 1)} while(#{generate(test, level)});"
+    "do #{generate(body, calculate_next_level(level))} while(#{generate(test, level)});"
   end
 
   def do_generate(%ESTree.ForStatement{init: init, test: test, update: update, body: body}, level) do
     init = generate(init)
     test = generate(test)
     update = generate(update)
-    body = generate(body, level + 1)
+    body = generate(body, calculate_next_level(level))
 
     "for(#{init}; #{test}; #{update}) #{body}"
   end
@@ -180,7 +180,7 @@ defmodule ESTree.Tools.Generator do
   def do_generate(%ESTree.ForInStatement{left: left, right: right, body: body}, level) do
     left = generate(left) |> String.replace(";","")
     right = generate(right)
-    body = generate(body, level + 1)
+    body = generate(body, calculate_next_level(level))
 
     "for(#{left} in #{right}) #{body}"
   end
@@ -232,7 +232,7 @@ defmodule ESTree.Tools.Generator do
   end
   
   def do_generate(%ESTree.ObjectExpression{properties: properties}, level) do
-   "{\n#{indent(level + 1)}" <> Enum.map_join(properties, ", ", &generate(&1, level + 1)) <> "\n#{indent(level)}}"
+   "{#{newline(level)}#{indent(calculate_next_level(level))}" <> Enum.map_join(properties, ", ", &generate(&1, calculate_next_level(level))) <> "#{newline(level)}#{indent(level)}}"
   end
 
   def do_generate(%ESTree.Property{key: key, value: value, kind: :init, shorthand: false, method: false, computed: false}, level) do
@@ -409,7 +409,7 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.SwitchCase{test: nil, consequent: consequent}, level) do
-    consequent = Enum.map_join(consequent, "\n", &generate(&1))
+    consequent = Enum.map_join(consequent, newline(level), &generate(&1))
     """
     default:
       #{consequent}
@@ -418,7 +418,7 @@ defmodule ESTree.Tools.Generator do
   
   def do_generate(%ESTree.SwitchCase{test: test, consequent: consequent}, level) do
     test = generate(test)
-    consequent = Enum.map_join(consequent, "\n", &generate(&1))
+    consequent = Enum.map_join(consequent, newline(level), &generate(&1))
 
     """
     case #{test}:
@@ -523,7 +523,7 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.ClassBody{body: body}, level) do
-    body = Enum.map_join(body, "\n", &generate(&1))
+    body = Enum.map_join(body, newline(level), &generate(&1))
 
     "{ #{body} }"
   end
@@ -728,8 +728,12 @@ defmodule ESTree.Tools.Generator do
 
   def do_generate(%ESTree.JSXOpeningElement{ name: name, attributes: attributes, selfClosing: selfClosing }, level) do
     selfClosing = if selfClosing, do: "/", else: ""
-
-    "<#{generate(name)} #{ Enum.map(attributes, &generate(&1)) |> Enum.join(" ") }#{selfClosing}>"
+    attributesValue = cond do
+      Enum.empty?(attributes) -> ""
+      true ->
+        " #{Enum.map(attributes, &generate(&1)) |> Enum.join(" ")}"
+    end
+    "<#{generate(name)}#{attributesValue}#{selfClosing}>"
   end
 
   def do_generate(%ESTree.JSXClosingElement{ name: name }, level) do
@@ -745,7 +749,7 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.JSXElement{ openingElement: openingElement, children: children, closingElement: closingElement }, level) do
-    "#{ generate(openingElement) } #{ Enum.map(children, &generate(&1, level + 1)) |> Enum.join(" ") } #{ generate(closingElement) }"
+    "#{ generate(openingElement) }#{ Enum.map(children, &generate(&1, calculate_next_level(level))) |> Enum.join(" ") }#{ generate(closingElement) }"
   end
 
   defp convert_string_characters(str) do
@@ -765,7 +769,27 @@ defmodule ESTree.Tools.Generator do
     end)
   end
 
+  defp indent(nil) do
+    ""
+  end
+
   defp indent(level) do
     String.duplicate("  ", level)
+  end
+
+  defp calculate_next_level(nil) do
+    nil
+  end
+
+  defp calculate_next_level(level) do
+    level + 1
+  end
+
+  defp newline(nil) do
+    ""
+  end
+
+  defp newline(level) do
+    "\n"
   end
 end

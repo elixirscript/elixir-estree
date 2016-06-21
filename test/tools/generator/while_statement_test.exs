@@ -17,7 +17,7 @@ defmodule ESTree.Tools.Generator.WhileStatement.Test do
       Builder.block_statement([]),
       Builder.identifier(:test)
     )
-    assert Generator.generate(ast) == "do {} while(test)"  
+    assert Generator.generate(ast) == "do {} while(test);"  
   end
 
 end
