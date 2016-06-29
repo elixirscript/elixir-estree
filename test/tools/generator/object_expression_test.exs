@@ -34,7 +34,7 @@ defmodule ESTree.Tools.Generator.ObjectExpression.Test do
         Builder.identifier(:value1)
       )
     ])
-    assert Generator.generate(ast) == "{key: value, key1: value1}" 
+    assert Generator.generate(ast) == "{key: value,key1: value1}"
   end
 
 
@@ -51,7 +51,7 @@ defmodule ESTree.Tools.Generator.ObjectExpression.Test do
         :set
       ),
     ])
-    assert Generator.generate(ast) == "{get key() {}, set key(p) {}}" 
+    assert Generator.generate(ast) == "{get key() {},set key(p) {}}"
   end
 
   should "convert object when properties contains getter and setter methods" do
@@ -71,7 +71,7 @@ defmodule ESTree.Tools.Generator.ObjectExpression.Test do
         true
       ),
     ])
-    assert Generator.generate(ast) == "{key() {}, key(p) {}}" 
+    assert Generator.generate(ast) == "{key() {},key(p) {}}"
   end
 
   should "convert object when properties contains shorthand properties" do

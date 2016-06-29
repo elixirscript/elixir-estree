@@ -17,7 +17,7 @@ defmodule ESTree.Tools.Generator do
 
   @spec generate(ESTree.operator | ESTree.Node.t, integer) :: binary
   def generate(value, level \\ nil) do
-    "#{indent(level)}#{do_generate(value, calculate_next_level(level))}"
+    "#{do_generate(value, calculate_next_level(level))}"
   end
 
   def do_generate(nil, level)do
@@ -232,7 +232,10 @@ defmodule ESTree.Tools.Generator do
   end
   
   def do_generate(%ESTree.ObjectExpression{properties: properties}, level) do
-   "{#{newline(level)}#{indent(calculate_next_level(level))}" <> Enum.map_join(properties, ", ", &generate(&1, calculate_next_level(level))) <> "#{newline(level)}#{indent(level)}}"
+    next_level = calculate_next_level(level)
+    previous_level = calculate_previous_level(level)
+    key_value_separator = ",#{newline(level)}#{indent(level)}"
+   "{#{newline(level)}#{indent(level)}" <> Enum.map_join(properties, key_value_separator, &generate(&1)) <> "#{newline(level)}#{indent(previous_level)}}"
   end
 
   def do_generate(%ESTree.Property{key: key, value: value, kind: :init, shorthand: false, method: false, computed: false}, level) do
@@ -360,8 +363,8 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.CallExpression{callee: %ESTree.MemberExpression{ object: %ESTree.FunctionExpression{} } = callee, arguments: arguments}, level) do
-    callee = generate(callee)
-    arguments = Enum.map_join(arguments, ",", &generate(&1))
+    callee = generate(callee, level)
+    arguments = Enum.map_join(arguments, ",", &generate(&1, level))
 
     "(#{callee}(#{arguments}))"
   end
@@ -374,7 +377,7 @@ defmodule ESTree.Tools.Generator do
   
   def do_generate(%ESTree.CallExpression{callee: callee, arguments: arguments}, level) do
     callee = generate(callee)
-    arguments = Enum.map_join(arguments, ",", &generate(&1))
+    arguments = Enum.map_join(arguments, ",", &generate(&1, calculate_previous_level(level)))
 
     "#{callee}(#{arguments})"
   end
@@ -783,6 +786,14 @@ defmodule ESTree.Tools.Generator do
 
   defp calculate_next_level(level) do
     level + 1
+  end
+
+  defp calculate_previous_level(nil) do
+    nil
+  end
+
+  defp calculate_previous_level(level) do
+    level - 1
   end
 
   defp newline(nil) do
