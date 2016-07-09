@@ -1,6 +1,6 @@
 defmodule ESTree do
   @moduledoc """
-  Defines structs that represent the JavaScript AST nodes from the ESTree spec. 
+  Defines structs that represent the JavaScript AST nodes from the ESTree spec.
 
   [ESTree Spec](https://github.com/estree/estree)
 
@@ -20,15 +20,15 @@ defmodule ESTree do
 
   @type unary_operator  ::  :- | :+ | :! | :"~" | :typeof | :void | :delete
 
-  @type binary_operator ::  :== | :!= | :=== | :!== | :< | :<= | :> | :>= | 
-                            :"<<" | :">>" | :>>> | :+ | :- | :* | :/ | :% | :| | 
-                            :^ | :& | :in | :instanceof
+  @type binary_operator ::  :== | :!= | :=== | :!== | :< | :<= | :> | :>= |
+                            :"<<" | :">>" | :>>> | :+ | :- | :* | :/ | :% | :| |
+                            :^ | :& | :in | :instanceof | :"**"
 
   @type logical_operator  ::  :|| | :&&
 
-  @type assignment_operator  :: := | :"+=" | :"-=" | :"*=" | :"/=" | :"%=" | 
-                                :"<<=" | :">>=" | :">>>=" | 
-                                :"|=" | :"^=" | :"&="
+  @type assignment_operator  :: := | :"+=" | :"-=" | :"*=" | :"/=" | :"%=" |
+                                :"<<=" | :">>=" | :">>>=" |
+                                :"|=" | :"^=" | :"&=" | :"**="
 
   @type update_operator  ::  :++ | :--
 

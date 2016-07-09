@@ -1,3 +1,7 @@
+# v2.4.0
+* Enhancements:
+  * Added exponential operators from ES2016
+
 # v2.3.0
 * Enhancements:
   * Added AssignmentProperty for use with ObjectPattern
@@ -10,7 +14,7 @@
 # v2.1.2
 
 * Bug fixes
-  * ESTree.Tools.Generator: updated UnaryExpression to put space in when operator is :typeof 
+  * ESTree.Tools.Generator: updated UnaryExpression to put space in when operator is :typeof
 
 # v2.1.1
 
@@ -47,5 +51,5 @@
 # v1.0.0
 
 * Enhancements
-  * Has the Node definitions from the [ESTree Spec](https://github.com/estree/estree) 
+  * Has the Node definitions from the [ESTree Spec](https://github.com/estree/estree)
   * Fills in ES6 Node definitions from [ast-types](https://github.com/benjamn/ast-types) and some from testing with [acorn](https://github.com/marijnh/acorn)

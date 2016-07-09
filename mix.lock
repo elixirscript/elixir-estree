@@ -1,4 +1,4 @@
-%{"dialyze": {:hex, :dialyze, "0.2.0"},
-  "earmark": {:hex, :earmark, "0.2.0"},
-  "ex_doc": {:hex, :ex_doc, "0.11.3"},
-  "shouldi": {:hex, :shouldi, "0.3.0"}}
+%{"dialyze": {:hex, :dialyze, "0.2.1", "9fb71767f96649020d769db7cbd7290059daff23707d6e851e206b1fdfa92f9d", [:mix], []},
+  "earmark": {:hex, :earmark, "0.2.1", "ba6d26ceb16106d069b289df66751734802777a3cbb6787026dd800ffeb850f3", [:mix], []},
+  "ex_doc": {:hex, :ex_doc, "0.12.0", "b774aabfede4af31c0301aece12371cbd25995a21bb3d71d66f5c2fe074c603f", [:mix], [{:earmark, "~> 0.2", [hex: :earmark, optional: false]}]},
+  "shouldi": {:hex, :shouldi, "0.3.0", "ae3fb3cec3328057377a0aa750aa1bb9f8b321ba054e1e2c7211512c383fb6ff", [:mix], []}}
