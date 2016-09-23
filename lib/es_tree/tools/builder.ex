@@ -883,13 +883,23 @@ defmodule ESTree.Tools.Builder do
 
   @spec jsx_element(
     ESTree.JSXOpeningElement.t,
-    [ESTree.Literal.t | ESTree.JSXExpressionContainer.t | ESTree.JSXElement.t],
+    [ESTree.JSXText.t | ESTree.JSXExpressionContainer.t | ESTree.JSXElement.t],
     ESTree.JSXClosingElement.t | nil,
     ESTree.SourceLocation.t | nil
   ) :: ESTree.JSXElement.t
   def jsx_element(openingElement, children \\ [], closingElement \\ nil, loc \\ nil) do
     %ESTree.JSXElement{ 
       openingElement: openingElement, children: children, closingElement: closingElement, loc: loc
+    }
+  end
+
+  @spec jsx_text(
+    binary,
+    ESTree.SourceLocation.t | nil
+  ) :: ESTree.JSXText.t
+  def jsx_text(value, loc \\ nil) do
+    %ESTree.JSXText{
+      value: value, loc: loc
     }
   end
 end

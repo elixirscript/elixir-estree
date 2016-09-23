@@ -752,7 +752,15 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.JSXElement{ openingElement: openingElement, children: children, closingElement: closingElement }, level) do
-    "#{ generate(openingElement) }#{ Enum.map(children, &generate(&1, calculate_next_level(level))) |> Enum.join(" ") }#{ generate(closingElement) }"
+    "#{ generate(openingElement) }#{ Enum.map(children, &generate(&1, calculate_next_level(level))) |> Enum.join }#{ generate(closingElement) }"
+  end
+
+  def do_generate(%ESTree.JSXText{ value: value }, level) do
+    value
+    |> String.replace("{", "&lcub;")
+    |> String.replace("}", "&rcub;")
+    |> String.replace("<", "&lt;")
+    |> String.replace(">", "&gt;")
   end
 
   defp convert_string_characters(str) do

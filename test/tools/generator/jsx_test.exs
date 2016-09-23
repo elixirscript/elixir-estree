@@ -148,4 +148,29 @@ defmodule ESTree.Tools.Generator.JSX.Test do
 
     assert Generator.generate(ast) == "<Test.xml><div/></Test.xml>"
   end
+
+  should "handle inner text" do
+    ast = Builder.jsx_element(
+      Builder.jsx_opening_element(
+        Builder.jsx_identifier(
+          "Test"
+        )
+      ),
+      [
+        Builder.jsx_text("counter: "),
+        Builder.jsx_expression_container(
+          Builder.identifier(:count)
+        ),
+        Builder.jsx_text("."),
+        Builder.jsx_text(" Escaped: { } < >"),
+      ],
+      Builder.jsx_closing_element(
+        Builder.jsx_identifier(
+          "Test"
+        )
+      )
+    )
+
+    assert Generator.generate(ast) == "<Test>counter: {count}. Escaped: &lcub; &rcub; &lt; &gt;</Test>"
+  end
 end
