@@ -752,7 +752,26 @@ defmodule ESTree.Tools.Generator do
   end
 
   def do_generate(%ESTree.JSXElement{ openingElement: openingElement, children: children, closingElement: closingElement }, level) do
-    "#{ generate(openingElement) }#{ Enum.map(children, &generate(&1, calculate_next_level(level))) |> Enum.join(" ") }#{ generate(closingElement) }"
+    "#{ generate(openingElement) }#{ generate_jsx_children(children, calculate_next_level(level)) }#{ generate(closingElement) }"
+  end
+
+  defp generate_jsx_children(children, level) do
+    gen_fn = fn
+      %ESTree.Literal{value: value} when is_binary(value) ->
+        convert_jsx_text(value)
+      other ->
+        generate(other, level)
+    end
+
+    children |> Enum.map(gen_fn) |> Enum.join
+  end
+
+  defp convert_jsx_text(str) do
+    str
+    |> String.replace("{", "&lcub;")
+    |> String.replace("}", "&rcub;")
+    |> String.replace("<", "&lt;")
+    |> String.replace(">", "&gt;")
   end
 
   defp convert_string_characters(str) do

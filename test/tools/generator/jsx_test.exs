@@ -148,4 +148,28 @@ defmodule ESTree.Tools.Generator.JSX.Test do
 
     assert Generator.generate(ast) == "<Test.xml><div/></Test.xml>"
   end
+
+  should "handle inner text" do
+    ast = Builder.jsx_element(
+      Builder.jsx_opening_element(
+        Builder.jsx_identifier(
+          "Test"
+        )
+      ),
+      [
+        Builder.literal("counter: "),
+        Builder.jsx_expression_container(
+          Builder.identifier(:count)
+        ),
+        Builder.literal("."),
+      ],
+      Builder.jsx_closing_element(
+        Builder.jsx_identifier(
+          "Test"
+        )
+      )
+    )
+
+    assert Generator.generate(ast) == "<Test>counter: {count}.</Test>"
+  end
 end
