@@ -33,7 +33,7 @@ defmodule ESTree.Mixfile do
 
   defp package do
     [ # These are the default files included in the package
-      files: ["lib", "mix.exs", "README*", "readme*", "LICENSE*", "license*", "CHANGELOG*"],
+      files: ["lib", "mix.exs", "README.md", "CHANGELOG.md"],
       maintainers: ["Bryan Joseph"],
       licenses: ["MIT"],
       links: %{ "GitHub" => "https://github.com/bryanjos/elixir-estree" }
