@@ -1,3 +1,7 @@
+# v2.4.1
+* Fixes
+  * Handle edge case when string literal is a JSX child
+
 # v2.4.0
 * Enhancements:
   * Added exponential operators from ES2016
