@@ -189,18 +189,14 @@ defmodule ESTree.Tools.Generator do
     "debugger;"
   end
 
-  def do_generate(%ESTree.VariableDeclaration{kind: kind, declarations: [declaration]}, _level) when kind in [:var, :let, :const] do
-    declaration = generate(declaration)
-
-    "#{to_string(kind)} #{declaration};"
-  end
-
   def do_generate(%ESTree.VariableDeclaration{kind: kind, declarations: declarations}, _level) when kind in [:var, :let, :const] do
 
-    ids = Enum.map_join(declarations, ",",  fn(x) -> generate(x.id) end)
-    inits = Enum.map_join(declarations, ",", fn(x) -> generate(x.init) end)
+    declarators = declarations
+    |> Enum.map_join(", ", fn(x) ->
+      generate(x)
+    end)
 
-    "#{to_string(kind)} #{ids} = #{inits};"
+    "#{to_string(kind)} #{declarators};"
   end
 
   def do_generate(%ESTree.VariableDeclarator{id: id, init: nil}, _level) do
