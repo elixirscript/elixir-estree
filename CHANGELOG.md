@@ -1,3 +1,7 @@
+# v2.4.2
+* Fixes
+  * [Expressions in variable declarations](https://github.com/bryanjos/elixir-estree/pull/13)
+
 # v2.4.1
 * Fixes
   * Handle edge case when string literal is a JSX child
