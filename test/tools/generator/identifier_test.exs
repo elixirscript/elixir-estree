@@ -1,13 +1,20 @@
 defmodule ESTree.Tools.Generator.Identifier.Test do
   use ShouldI
+
   alias ESTree.Tools.Builder
-  alias ESTree.Tools.Generator
+  import ESTree.Test.Support
 
-  should "convert identifiers" do
+  should "convert identifiers (binary)" do
     ast = Builder.identifier("hello")
-    assert Generator.generate(ast) == "hello"
 
+    assert_gen ast, "hello"
+    assert_gen ast, "hello", beauty: false
+  end
+
+  should "convert identifiers (atom)" do
     ast = Builder.identifier(:hello)
-    assert Generator.generate(ast) == "hello"   
+
+    assert_gen ast, "hello"
+    assert_gen ast, "hello", beauty: false
   end
 end

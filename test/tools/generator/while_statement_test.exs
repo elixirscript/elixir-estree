@@ -1,15 +1,17 @@
 defmodule ESTree.Tools.Generator.WhileStatement.Test do
   use ShouldI
-  alias ESTree.Tools.Builder
-  alias ESTree.Tools.Generator
 
+  alias ESTree.Tools.Builder
+  import ESTree.Test.Support
 
   should "convert while" do
     ast = Builder.while_statement(
       Builder.identifier(:test),
       Builder.block_statement([])
     )
-    assert Generator.generate(ast) == "while(test) {}"  
+
+    assert_gen ast, "while (test) {}"
+    assert_gen ast, "while(test){}", beauty: false
   end
 
   should "convert do while" do
@@ -17,7 +19,8 @@ defmodule ESTree.Tools.Generator.WhileStatement.Test do
       Builder.block_statement([]),
       Builder.identifier(:test)
     )
-    assert Generator.generate(ast) == "do {} while(test);"  
-  end
 
+    assert_gen ast, "do {} while (test);"
+    assert_gen ast, "do{}while(test);", beauty: false
+  end
 end

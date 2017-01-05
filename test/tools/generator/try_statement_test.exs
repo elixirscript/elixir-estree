@@ -1,7 +1,8 @@
 defmodule ESTree.Tools.Generator.TryStatement.Test do
   use ShouldI
+
   alias ESTree.Tools.Builder
-  alias ESTree.Tools.Generator
+  import ESTree.Test.Support
 
   should "convert try with catch" do
     ast = Builder.try_statement(
@@ -11,8 +12,9 @@ defmodule ESTree.Tools.Generator.TryStatement.Test do
         Builder.block_statement([])
       )
     )
-    
-    assert Generator.generate(ast) == "try{}catch(e) {}"
+
+    assert_gen ast, "try {} catch (e) {}"
+    assert_gen ast, "try{}catch(e){}", beauty: false
   end
 
   should "convert try with finally" do
@@ -21,8 +23,9 @@ defmodule ESTree.Tools.Generator.TryStatement.Test do
       nil,
       Builder.block_statement([])
     )
-    
-    assert Generator.generate(ast) == "try{}finally{}"
+
+    assert_gen ast, "try {} finally {}"
+    assert_gen ast, "try{}finally{}", beauty: false
   end
 
   should "convert try catch finally" do
@@ -34,7 +37,8 @@ defmodule ESTree.Tools.Generator.TryStatement.Test do
       ),
       Builder.block_statement([])
     )
-    
-    assert Generator.generate(ast) == "try{}catch(e) {}finally{}"
+
+    assert_gen ast, "try {} catch (e) {} finally {}"
+    assert_gen ast, "try{}catch(e){}finally{}", beauty: false
   end
 end
