@@ -1,7 +1,8 @@
 defmodule ESTree.Tools.Generator.ImportDeclaration.Test do
   use ShouldI
+
   alias ESTree.Tools.Builder
-  alias ESTree.Tools.Generator
+  import ESTree.Test.Support
 
   should "convert import declaration with one specifier" do
     ast = Builder.import_declaration([
@@ -12,7 +13,8 @@ defmodule ESTree.Tools.Generator.ImportDeclaration.Test do
       Builder.literal(:test)
     )
 
-    assert Generator.generate(ast) == "import { test } from 'test';"  
+    assert_gen ast, "import { test } from 'test';"
+    assert_gen ast, "import{test}from'test';", beauty: false
   end
 
   should "convert import declaration with one specifier with an alias" do
@@ -24,7 +26,8 @@ defmodule ESTree.Tools.Generator.ImportDeclaration.Test do
       Builder.literal(:test)
     )
 
-    assert Generator.generate(ast) == "import { test as test1 } from 'test';"  
+    assert_gen ast, "import { test as test1 } from 'test';"
+    assert_gen ast, "import{test as test1}from'test';", beauty: false
   end
 
   should "convert import declaration with more than one specifier" do
@@ -42,7 +45,8 @@ defmodule ESTree.Tools.Generator.ImportDeclaration.Test do
       Builder.literal(:test)
     )
 
-    assert Generator.generate(ast) == "import { top, test as test1 } from 'test';"  
+    assert_gen ast, "import { top, test as test1 } from 'test';"
+    assert_gen ast, "import{top,test as test1}from'test';", beauty: false
   end
 
 
@@ -55,7 +59,8 @@ defmodule ESTree.Tools.Generator.ImportDeclaration.Test do
       Builder.literal(:test)
     )
 
-    assert Generator.generate(ast) == "import test from 'test';"  
+    assert_gen ast, "import test from 'test';"
+    assert_gen ast, "import test from'test';", beauty: false
   end
 
   should "convert import declaration with a namespace specifier" do
@@ -66,7 +71,7 @@ defmodule ESTree.Tools.Generator.ImportDeclaration.Test do
       Builder.literal(:test)
     )
 
-    assert Generator.generate(ast) == "import * as test from 'test';"  
+    assert_gen ast, "import * as test from 'test';"
+    assert_gen ast, "import*as test from'test';", beauty: false
   end
-
 end

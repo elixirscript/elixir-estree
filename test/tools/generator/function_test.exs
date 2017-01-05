@@ -1,7 +1,8 @@
 defmodule ESTree.Tools.Generator.Function.Test do
   use ShouldI
+
   alias ESTree.Tools.Builder
-  alias ESTree.Tools.Generator
+  import ESTree.Test.Support
 
   should "convert basic function declaration" do
     ast = Builder.function_declaration(
@@ -10,9 +11,11 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function hello(){}" 
+    assert_gen ast, "function hello() {}"
+    assert_gen ast, "function hello(){}", beauty: false
   end
 
   should "convert basic function declaration generator" do
@@ -20,11 +23,46 @@ defmodule ESTree.Tools.Generator.Function.Test do
       Builder.identifier(:hello),
       [],
       [],
-      Builder.block_statement([]),
+      Builder.block_statement([
+        Builder.return_statement(
+          Builder.yield_expression(
+            Builder.call_expression(
+              Builder.identifier(:x),
+              []
+            )
+          )
+        )
+      ]),
       true,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function* hello(){}" 
+    assert_gen ast, "function* hello() {\n    return yield x();\n}"
+    assert_gen ast, "function*hello(){return yield x();}", beauty: false
+  end
+
+  should "convert basic async function declaration" do
+    ast = Builder.function_declaration(
+      Builder.identifier(:hello),
+      [],
+      [],
+      Builder.block_statement([
+        Builder.return_statement(
+          Builder.await_expression(
+            Builder.call_expression(
+              Builder.identifier(:x),
+              []
+            )
+          )
+        )
+      ]),
+      false,
+      false,
+      true
+    )
+
+    assert_gen ast, "async function hello() {\n    return await x();\n}"
+    assert_gen ast, "async function hello(){return await x();}", beauty: false
   end
 
   should "convert function declaration with params" do
@@ -34,9 +72,11 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function hello(one){}"
+    assert_gen ast, "function hello(one) {}"
+    assert_gen ast, "function hello(one){}", beauty: false
 
     ast = Builder.function_declaration(
       Builder.identifier(:hello),
@@ -44,9 +84,11 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function hello(one,two){}" 
+    assert_gen ast, "function hello(one, two) {}"
+    assert_gen ast, "function hello(one,two){}", beauty: false
   end
 
   should "convert function declaration with default values" do
@@ -56,9 +98,11 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [nil, Builder.literal(1)],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function hello(one,two = 1){}" 
+    assert_gen ast, "function hello(one, two = 1) {}"
+    assert_gen ast, "function hello(one,two=1){}", beauty: false
   end
 
   should "convert basic function expression" do
@@ -67,9 +111,11 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function(){}" 
+    assert_gen ast, "function() {}"
+    assert_gen ast, "function(){}", beauty: false
   end
 
   should "convert basic function expression generator" do
@@ -78,9 +124,34 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [],
       Builder.block_statement([]),
       true,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function*(){}" 
+    assert_gen ast, "function*() {}"
+    assert_gen ast, "function*(){}", beauty: false
+  end
+
+  should "convert basic async function expression" do
+    ast = Builder.function_expression(
+      [],
+      [],
+      Builder.block_statement([
+        Builder.return_statement(
+          Builder.await_expression(
+            Builder.call_expression(
+              Builder.identifier(:x),
+              []
+            )
+          )
+        )
+      ]),
+      false,
+      false,
+      true
+    )
+
+    assert_gen ast, "async function() {\n    return await x();\n}"
+    assert_gen ast, "async function(){return await x();}", beauty: false
   end
 
   should "convert function expression with params" do
@@ -89,18 +160,22 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function(one){}"
+    assert_gen ast, "function(one) {}"
+    assert_gen ast, "function(one){}", beauty: false
 
     ast = Builder.function_expression(
       [Builder.identifier(:one), Builder.identifier(:two)],
       [],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function(one,two){}" 
+    assert_gen ast, "function(one, two) {}"
+    assert_gen ast, "function(one,two){}", beauty: false
   end
 
   should "convert function expression with default values" do
@@ -109,61 +184,10 @@ defmodule ESTree.Tools.Generator.Function.Test do
       [nil, Builder.literal(1)],
       Builder.block_statement([]),
       false,
-      false)
+      false
+    )
 
-    assert Generator.generate(ast) == "function(one,two = 1){}" 
-  end
-
-  should "convert basic arrow function" do
-    ast = Builder.arrow_function_expression(
-      [],
-      [],
-      Builder.block_statement([]),
-      false,
-      false)
-
-    assert Generator.generate(ast) == "() => {}" 
-  end
-
-  should "convert basic arrow function expression generator" do
-    ast = Builder.arrow_function_expression(
-      [],
-      [],
-      Builder.block_statement([]),
-      true,
-      false)
-
-    assert Generator.generate(ast) == "()* => {}" 
-  end
-
-  should "convert arrow function with params" do
-    ast = Builder.arrow_function_expression(
-      [Builder.identifier(:one)],
-      [],
-      Builder.block_statement([]),
-      false,
-      false)
-
-    assert Generator.generate(ast) == "(one) => {}"
-
-    ast = Builder.arrow_function_expression(
-      [Builder.identifier(:one), Builder.identifier(:two)],
-      [],
-      Builder.block_statement([]),
-      false,
-      false)
-
-    assert Generator.generate(ast) == "(one,two) => {}" 
-  end
-
-  should "convert arrow function with default values" do
-    ast = Builder.arrow_function_expression(
-      [Builder.identifier(:one), Builder.identifier(:two)],
-      [nil, Builder.literal(1)],
-      Builder.block_statement([]),
-      false,
-      false)
-
-    assert Generator.generate(ast) == "(one,two = 1) => {}" 
+    assert_gen ast, "function(one, two = 1) {}"
+    assert_gen ast, "function(one,two=1){}", beauty: false
   end
 end

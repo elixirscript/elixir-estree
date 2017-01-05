@@ -1,24 +1,28 @@
 defmodule ESTree.Tools.Generator.VariableDeclaration.Test do
   use ShouldI
 
-  alias ESTree.Tools.{Builder, Generator}
+  alias ESTree.Tools.Builder
+  import ESTree.Test.Support
 
   should "emit var declaration" do
     ast = Builder.variable_declaration([])
 
-    assert Generator.generate(ast) == "var ;"
+    assert_gen ast, "var ;"
+    assert_gen ast, "var ;", beauty: false
   end
 
   should "emit let declaration" do
     ast = Builder.variable_declaration([], :let)
 
-    assert Generator.generate(ast) == "let ;"
+    assert_gen ast, "let ;"
+    assert_gen ast, "let ;", beauty: false
   end
 
   should "emit const declaration" do
     ast = Builder.variable_declaration([], :const)
 
-    assert Generator.generate(ast) == "const ;"
+    assert_gen ast, "const ;"
+    assert_gen ast, "const ;", beauty: false
   end
 
   should "add variable declarator" do
@@ -26,7 +30,8 @@ defmodule ESTree.Tools.Generator.VariableDeclaration.Test do
       Builder.variable_declarator(Builder.identifier(:a))
     ])
 
-    assert Generator.generate(ast) == "var a;"
+    assert_gen ast, "var a;"
+    assert_gen ast, "var a;", beauty: false
   end
 
   should "add variable declarators with corresponding inits" do
@@ -43,7 +48,7 @@ defmodule ESTree.Tools.Generator.VariableDeclaration.Test do
       )
     ])
 
-    assert Generator.generate(ast) == "var a = 1, b, c = a + 2;"
+    assert_gen ast, "var a = 1,\n    b,\n    c = a + 2;"
+    assert_gen ast, "var a=1,b,c=a+2;", beauty: false
   end
-
 end
