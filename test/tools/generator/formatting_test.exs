@@ -35,7 +35,43 @@ defmodule ESTree.Tools.Generator.Formatting.Test do
                   Builder.literal(-1)
                 )
               )
-            ])
+            ]),
+            Builder.if_statement(
+              Builder.literal(false),
+              Builder.block_statement([
+                Builder.expression_statement(
+                  Builder.assignment_expression(
+                    :=,
+                    Builder.identifier(:a),
+                    Builder.literal(-2)
+                  )
+                )
+              ]),
+              Builder.block_statement([
+                Builder.expression_statement(
+                  Builder.assignment_expression(
+                    :=,
+                    Builder.identifier(:a),
+                    Builder.literal(-3)
+                  )
+                )
+              ])
+            )
+          ),
+          Builder.if_statement(
+            Builder.literal(false),
+            Builder.return_statement(
+              Builder.literal(-1)
+            ),
+            Builder.if_statement(
+              Builder.literal(false),
+              Builder.return_statement(
+                Builder.literal(-2)
+              ),
+              Builder.return_statement(
+                Builder.literal(-3)
+              )
+            )
           ),
           Builder.switch_statement(
             Builder.literal(false),
@@ -103,7 +139,18 @@ function test() {
 
     if (true) {
         a = -1;
+    } else if (false) {
+        a = -2;
+    } else {
+        a = -3;
     }
+
+    if (false)
+        return -1;
+    else if (false)
+        return -2;
+    else
+        return -3;
 
     switch (false) {
     default:
@@ -123,7 +170,102 @@ test();
 
     assert_gen ast, String.trim(str)
 
-    str = "function test(){var a,b,c=function(){return 1;};if(true){a=-1;}switch(false){default:b=0;break;}return {a:a+1,b:b+2,c:c+3};}test();"
+    str = "function test(){var a,b,c=function(){return 1;};if(true){a=-1;}else if(false){a=-2;}else{a=-3;}if(false)return -1;else if(false)return -2;else return -3;switch(false){default:b=0;break;}return {a:a+1,b:b+2,c:c+3};}test();"
+
+    assert_gen ast, str, beauty: false
+  end
+
+  should "format if statements correct" do
+    ast = Builder.program([
+      Builder.function_declaration(
+        Builder.identifier(:test),
+        [],
+        [],
+        Builder.block_statement([
+          Builder.if_statement(
+            Builder.literal(true),
+            Builder.block_statement([
+              Builder.return_statement(Builder.literal(1))
+            ])
+          ),
+          Builder.if_statement(
+            Builder.literal(true),
+            Builder.return_statement(Builder.literal(1))
+          ),
+          Builder.if_statement(
+            Builder.literal(true),
+            Builder.block_statement([
+              Builder.return_statement(Builder.literal(1))
+            ]),
+            Builder.return_statement(Builder.literal(2))
+          ),
+          Builder.if_statement(
+            Builder.literal(true),
+            Builder.return_statement(Builder.literal(1)),
+            Builder.block_statement([
+              Builder.return_statement(Builder.literal(2))
+            ])
+          ),
+          Builder.if_statement(
+            Builder.literal(true),
+            Builder.block_statement([
+              Builder.return_statement(Builder.literal(1))
+            ]),
+            Builder.if_statement(
+              Builder.literal(false),
+              Builder.return_statement(Builder.literal(2))
+            )
+          ),
+          Builder.if_statement(
+            Builder.literal(true),
+            Builder.return_statement(Builder.literal(1)),
+            Builder.if_statement(
+              Builder.literal(false),
+              Builder.block_statement([
+                Builder.return_statement(Builder.literal(2))
+              ])
+            )
+          )
+        ])
+      )
+    ])
+
+    str = """
+function test() {
+    if (true) {
+        return 1;
+    }
+
+    if (true)
+        return 1;
+
+    if (true) {
+        return 1;
+    } else
+        return 2;
+
+    if (true)
+        return 1;
+    else {
+        return 2;
+    }
+
+    if (true) {
+        return 1;
+    } else if (false)
+        return 2;
+
+    if (true)
+        return 1;
+    else if (false) {
+        return 2;
+    }
+}
+"""
+
+    assert_gen ast, String.trim(str)
+
+    str = "function test(){if(true){return 1;}if(true)return 1;if(true){return 1;}else return 2;if(true)return 1;else{return 2;}if(true){return 1;}else if(false)return 2;if(true)return 1;else if(false){return 2;}}"
 
     assert_gen ast, str, beauty: false
   end

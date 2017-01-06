@@ -619,11 +619,23 @@ defmodule ESTree.Tools.Generator do
       ""
     end
 
-    sep_end = if opts.beauty do
-      "\n"
-    else
-      ""
-    end
+    consequent =
+      case consequent do
+        %BlockStatement{} ->
+          [wh_sep, do_generate(consequent, opts)]
+
+        _ ->
+          [sep_c, do_generate(consequent, opts)]
+      end
+
+    ["if", wh_sep, "(", test, ")", consequent]
+  end
+
+  defp do_generate(%IfStatement{test: test, consequent: consequent, alternate: alternate}, %{wh_sep: wh_sep} = opts) do
+    is_cons_block = consequent.__struct__ == BlockStatement
+
+    i_1 = indent(opts)
+    i_2 = indent(next_indent(opts))
 
     consequent =
       case consequent do
@@ -631,53 +643,52 @@ defmodule ESTree.Tools.Generator do
           [wh_sep, do_generate(consequent, opts)]
 
         _ ->
-          [sep_c, do_generate(consequent, opts), sep_end]
+          indent = if opts.beauty do
+              ["\n", i_2]
+            else
+              ""
+            end
+
+          [indent, do_generate(consequent, opts)]
       end
 
-    ["if", wh_sep, "(", test, ")", consequent]
-  end
-
-  defp do_generate(%IfStatement{test: test, consequent: consequent, alternate: alternate}, %{wh_sep: wh_sep} = opts) do
-    test = do_generate(test, opts)
-
-    sep_c = if opts.beauty do
-      ["\n", indent(next_indent(opts))]
-    else
-      ""
-    end
-
-    sep_end = if opts.beauty do
-      "\n"
-    else
-      ""
-    end
-
-    {consequent, sep_if} =
-      case consequent do
-        %BlockStatement{} ->
-          {[wh_sep, do_generate(consequent, opts)], wh_sep}
-
-        _ ->
-          {[sep_c, do_generate(consequent, opts), sep_end], ""}
-      end
-
-    sep_a = if opts.beauty do
-      ["\n", indent(next_indent(opts))]
+    alternate_indent = if opts.beauty do
+      ["\n", i_2]
     else
       " "
     end
 
-    alternate =
+    alternate = if is_cons_block do
       case alternate do
         %BlockStatement{} ->
           [wh_sep, "else", wh_sep, do_generate(alternate, opts)]
 
         %IfStatement{} ->
-          [sep_if, "else ", do_generate(alternate, opts)]
+          [wh_sep, "else ", do_generate(alternate, opts)]
 
         _ ->
-          ["else", sep_a, do_generate(alternate, opts)]
+          [wh_sep, "else", alternate_indent, do_generate(alternate, opts)]
       end
+    else
+      indent = if opts.beauty do
+        ["\n", i_1]
+      else
+        ""
+      end
+
+      case alternate do
+        %BlockStatement{} ->
+          [indent, "else", wh_sep, do_generate(alternate, opts)]
+
+        %IfStatement{} ->
+          [indent, "else ", do_generate(alternate, opts)]
+
+        _ ->
+          [indent, "else", alternate_indent, do_generate(alternate, opts)]
+      end
+    end
+
+    test = do_generate(test, opts)
 
     ["if", wh_sep, "(", test, ")", consequent, alternate]
   end
