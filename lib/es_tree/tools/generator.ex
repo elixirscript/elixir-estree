@@ -144,7 +144,7 @@ defmodule ESTree.Tools.Generator do
     :">>>=" , :"|=" , :"^=" , :"&=", :++, :--
   ]
 
-  @spec generate(ESTree.operator | ESTree.Node.t, integer) :: binary
+  @spec generate(ESTree.operator | ESTree.Node.t, boolean) :: binary
   def generate(value, beauty \\ true) do
     opts = if beauty do
       %{
@@ -174,25 +174,25 @@ defmodule ESTree.Tools.Generator do
     |> :erlang.iolist_to_binary()
   end
 
-  def do_generate(nil, _opts) do
+  defp do_generate(nil, _opts) do
     []
   end
 
-  def do_generate(operator, _opts) when operator in @operators do
+  defp do_generate(operator, _opts) when operator in @operators do
     to_string(operator)
   end
 
   # ArrayExpression
 
-  def do_generate(%ArrayExpression{elements: nil}, _opts) do
+  defp do_generate(%ArrayExpression{elements: nil}, _opts) do
     "[]"
   end
 
-  def do_generate(%ArrayExpression{elements: []}, _opts) do
+  defp do_generate(%ArrayExpression{elements: []}, _opts) do
     "[]"
   end
 
-  def do_generate(%ArrayExpression{elements: elements}, opts) do
+  defp do_generate(%ArrayExpression{elements: elements}, opts) do
     elements = elements
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -202,15 +202,15 @@ defmodule ESTree.Tools.Generator do
 
   # ArrayPattern
 
-  def do_generate(%ArrayPattern{elements: nil}, _opts) do
+  defp do_generate(%ArrayPattern{elements: nil}, _opts) do
     "[]"
   end
 
-  def do_generate(%ArrayPattern{elements: []}, _opts) do
+  defp do_generate(%ArrayPattern{elements: []}, _opts) do
     "[]"
   end
 
-  def do_generate(%ArrayPattern{elements: elements}, opts) do
+  defp do_generate(%ArrayPattern{elements: elements}, opts) do
     elements = elements
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -220,7 +220,7 @@ defmodule ESTree.Tools.Generator do
 
   # ArrowFunctionExpression
 
-  def do_generate(%ArrowFunctionExpression{params: params, defaults: defaults, body: body, generator: generator} = ast, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ArrowFunctionExpression{params: params, defaults: defaults, body: body, generator: generator} = ast, %{wh_sep: wh_sep} = opts) do
     generator = if generator, do: "*", else: ""
     params = params_and_defaults(params, defaults, opts)
     body = if body.__struct__ == ObjectExpression do
@@ -238,7 +238,7 @@ defmodule ESTree.Tools.Generator do
 
   # AssignmentExpression
 
-  def do_generate(%AssignmentExpression{operator: operator, left: left, right: right}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%AssignmentExpression{operator: operator, left: left, right: right}, %{wh_sep: wh_sep} = opts) do
     operator = do_generate(operator, opts)
     left = do_generate(left, opts)
     right = do_generate(right, opts)
@@ -248,7 +248,7 @@ defmodule ESTree.Tools.Generator do
 
   # AssignmentPattern
 
-  def do_generate(%AssignmentPattern{left: left, right: right}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%AssignmentPattern{left: left, right: right}, %{wh_sep: wh_sep} = opts) do
     left = do_generate(left, opts)
      right = do_generate(right, opts)
 
@@ -257,19 +257,19 @@ defmodule ESTree.Tools.Generator do
 
   # AssignmentProperty
 
-  def do_generate(%AssignmentProperty{value: value}, opts) do
+  defp do_generate(%AssignmentProperty{value: value}, opts) do
     do_generate(value, opts)
   end
 
   # AwaitExpression
 
-  def do_generate(%AwaitExpression{argument: argument, all: _all}, opts) do
+  defp do_generate(%AwaitExpression{argument: argument, all: _all}, opts) do
     ["await ", do_generate(argument, opts)]
   end
 
   # BinaryExpression
 
-  def do_generate(%BinaryExpression{operator: operator, left: left, right: right} = node, opts) when operator in [:in, :instanceof] do
+  defp do_generate(%BinaryExpression{operator: operator, left: left, right: right} = node, opts) when operator in [:in, :instanceof] do
     operator = [" ", do_generate(operator, opts), " "]
     left = format_binary_expression(left, node, false, opts)
     right = format_binary_expression(right, node, true, opts)
@@ -281,7 +281,7 @@ defmodule ESTree.Tools.Generator do
     end
   end
 
-  def do_generate(%BinaryExpression{operator: operator, left: left, right: right} = node, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%BinaryExpression{operator: operator, left: left, right: right} = node, %{wh_sep: wh_sep} = opts) do
     operator = do_generate(operator, opts)
     left = format_binary_expression(left, node, false, opts)
     right = format_binary_expression(right, node, true, opts)
@@ -291,11 +291,11 @@ defmodule ESTree.Tools.Generator do
 
   # BlockStatement
 
-  def do_generate(%BlockStatement{body: []}, _opts) do
+  defp do_generate(%BlockStatement{body: []}, _opts) do
     "{}"
   end
 
-  def do_generate(%BlockStatement{body: body}, opts) do
+  defp do_generate(%BlockStatement{body: body}, opts) do
     close_bracket = if opts.beauty do
       ["\n", indent(opts), "}"]
     else
@@ -326,17 +326,17 @@ defmodule ESTree.Tools.Generator do
 
   # BreakStatement
 
-  def do_generate(%BreakStatement{label: nil}, _opts) do
+  defp do_generate(%BreakStatement{label: nil}, _opts) do
     "break;"
   end
 
-  def do_generate(%BreakStatement{label: label}, opts) do
+  defp do_generate(%BreakStatement{label: label}, opts) do
     ["break ", do_generate(label, opts), ";"]
   end
 
   # CallExpression
 
-  def do_generate(%CallExpression{callee: callee, arguments: arguments}, opts) do
+  defp do_generate(%CallExpression{callee: callee, arguments: arguments}, opts) do
     precedence = Map.get(@expressions_precedence, callee.__struct__)
     callee = do_generate(callee, opts)
 
@@ -355,7 +355,7 @@ defmodule ESTree.Tools.Generator do
 
   # CatchClause
 
-  def do_generate(%CatchClause{param: param, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%CatchClause{param: param, body: body}, %{wh_sep: wh_sep} = opts) do
     param = do_generate(param, opts)
     body = do_generate(body, opts)
 
@@ -364,11 +364,11 @@ defmodule ESTree.Tools.Generator do
 
   # ClassBody
 
-  def do_generate(%ClassBody{body: []}, _opts) do
+  defp do_generate(%ClassBody{body: []}, _opts) do
     "{}"
   end
 
-  def do_generate(%ClassBody{body: body}, opts) do
+  defp do_generate(%ClassBody{body: body}, opts) do
     close_bracket = if opts.beauty do
       ["\n", indent(opts), "}"]
     else
@@ -399,14 +399,14 @@ defmodule ESTree.Tools.Generator do
 
   # ClassDeclaration
 
-  def do_generate(%ClassDeclaration{id: id, body: body, superClass: nil}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ClassDeclaration{id: id, body: body, superClass: nil}, %{wh_sep: wh_sep} = opts) do
     id = do_generate(id, opts)
     body = do_generate(body, opts)
 
     ["class ", id, wh_sep, body]
   end
 
-  def do_generate(%ClassDeclaration{id: id, body: body, superClass: super_class}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ClassDeclaration{id: id, body: body, superClass: super_class}, %{wh_sep: wh_sep} = opts) do
     id = do_generate(id, opts)
     body = do_generate(body, opts)
     super_class = do_generate(super_class, opts)
@@ -416,11 +416,11 @@ defmodule ESTree.Tools.Generator do
 
   # ClassExpression
 
-  def do_generate(%ClassExpression{body: body, superClass: nil}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ClassExpression{body: body, superClass: nil}, %{wh_sep: wh_sep} = opts) do
     ["class", wh_sep, do_generate(body, opts)]
   end
 
-  def do_generate(%ClassExpression{body: body, superClass: super_class}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ClassExpression{body: body, superClass: super_class}, %{wh_sep: wh_sep} = opts) do
     super_class = do_generate(super_class, opts)
     body = do_generate(body, opts)
 
@@ -429,7 +429,7 @@ defmodule ESTree.Tools.Generator do
 
   # ConditionalStatement
 
-  def do_generate(%ConditionalStatement{test: test, alternate: alternate, consequent: consequent}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ConditionalStatement{test: test, alternate: alternate, consequent: consequent}, %{wh_sep: wh_sep} = opts) do
     precedence = Map.get(@expressions_precedence, test.__struct__)
     test = do_generate(test, opts)
 
@@ -447,23 +447,23 @@ defmodule ESTree.Tools.Generator do
 
   # ContinueStatement
 
-  def do_generate(%ContinueStatement{label: nil}, _opts) do
+  defp do_generate(%ContinueStatement{label: nil}, _opts) do
     "continue;"
   end
 
-  def do_generate(%ContinueStatement{label: label}, opts) do
+  defp do_generate(%ContinueStatement{label: label}, opts) do
     ["continue ", do_generate(label, opts), ";"]
   end
 
   # DebuggerStatement
 
-  def do_generate(%DebuggerStatement{}, _opts) do
+  defp do_generate(%DebuggerStatement{}, _opts) do
     "debugger;"
   end
 
   # DoWhileStatement
 
-  def do_generate(%DoWhileStatement{test: test, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%DoWhileStatement{test: test, body: body}, %{wh_sep: wh_sep} = opts) do
     test = do_generate(test, opts)
     body = do_generate(body, opts)
 
@@ -472,13 +472,13 @@ defmodule ESTree.Tools.Generator do
 
   # EmptyStatement
 
-  def do_generate(%EmptyStatement{}, _opts) do
+  defp do_generate(%EmptyStatement{}, _opts) do
     ";"
   end
 
   # ExportAllDeclaration
 
-  def do_generate(%ExportAllDeclaration{source: source}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ExportAllDeclaration{source: source}, %{wh_sep: wh_sep} = opts) do
     source = do_generate(source, opts)
 
     ["export", wh_sep, "*", wh_sep, "from", wh_sep, source, ";"]
@@ -486,25 +486,25 @@ defmodule ESTree.Tools.Generator do
 
   # ExportDefaultDeclaration
 
-  def do_generate(%ExportDefaultDeclaration{declaration: %ClassDeclaration{} = declaration}, opts) do
+  defp do_generate(%ExportDefaultDeclaration{declaration: %ClassDeclaration{} = declaration}, opts) do
     ["export default ", do_generate(declaration, opts)]
   end
 
-  def do_generate(%ExportDefaultDeclaration{declaration: %FunctionDeclaration{} = declaration}, opts) do
+  defp do_generate(%ExportDefaultDeclaration{declaration: %FunctionDeclaration{} = declaration}, opts) do
     ["export default ", do_generate(declaration, opts)]
   end
 
-  def do_generate(%ExportDefaultDeclaration{declaration: declaration}, opts) do
+  defp do_generate(%ExportDefaultDeclaration{declaration: declaration}, opts) do
     ["export default ", do_generate(declaration, opts), ";"]
   end
 
   # ExportNamedDeclaration
 
-  def do_generate(%ExportNamedDeclaration{declaration: declaration, specifiers: [], source: nil}, opts) do
+  defp do_generate(%ExportNamedDeclaration{declaration: declaration, specifiers: [], source: nil}, opts) do
     ["export ", do_generate(declaration, opts)]
   end
 
-  def do_generate(%ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: nil}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: nil}, %{wh_sep: wh_sep} = opts) do
     specifiers = specifiers
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -512,7 +512,7 @@ defmodule ESTree.Tools.Generator do
     ["export", wh_sep, "{", wh_sep, specifiers, wh_sep, "};"]
   end
 
-  def do_generate(%ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ExportNamedDeclaration{declaration: nil, specifiers: specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
     specifiers = specifiers
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -522,7 +522,7 @@ defmodule ESTree.Tools.Generator do
 
   # ExportSpecifier
 
-  def do_generate(%ExportSpecifier{local: local, exported: exported}, opts) do
+  defp do_generate(%ExportSpecifier{local: local, exported: exported}, opts) do
     if local == exported do
       do_generate(local, opts)
     else
@@ -532,7 +532,7 @@ defmodule ESTree.Tools.Generator do
 
   # ExpressionStatement
 
-  def do_generate(%ExpressionStatement{expression: expression}, opts) do
+  defp do_generate(%ExpressionStatement{expression: expression}, opts) do
     precedence = Map.get(@expressions_precedence, expression.__struct__)
 
     if precedence == 17 or (precedence == 3 and expression.left.__struct__ == ObjectPattern)  do
@@ -544,7 +544,7 @@ defmodule ESTree.Tools.Generator do
 
   # ForInStatement
 
-  def do_generate(%ForInStatement{left: left, right: right, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ForInStatement{left: left, right: right, body: body}, %{wh_sep: wh_sep} = opts) do
     left = do_generate(left, %{opts | no_trailing_semicolon: true})
     right = do_generate(right, opts)
     body = do_generate(body, opts)
@@ -554,7 +554,7 @@ defmodule ESTree.Tools.Generator do
 
   # ForOfStatement
 
-  def do_generate(%ForOfStatement{left: left, right: right, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ForOfStatement{left: left, right: right, body: body}, %{wh_sep: wh_sep} = opts) do
     left = do_generate(left, %{opts | no_trailing_semicolon: true})
     right = do_generate(right, opts)
     body = do_generate(body, opts)
@@ -564,7 +564,7 @@ defmodule ESTree.Tools.Generator do
 
   # ForStatement
 
-  def do_generate(%ForStatement{init: init, test: test, update: update, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ForStatement{init: init, test: test, update: update, body: body}, %{wh_sep: wh_sep} = opts) do
     init = do_generate(init, %{opts | no_trailing_semicolon: true})
     test = do_generate(test, opts)
     update = do_generate(update, opts)
@@ -575,7 +575,7 @@ defmodule ESTree.Tools.Generator do
 
   # FunctionDeclaration
 
-  def do_generate(%FunctionDeclaration{generator: generator, async: async, id: id, params: params, defaults: defaults, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%FunctionDeclaration{generator: generator, async: async, id: id, params: params, defaults: defaults, body: body}, %{wh_sep: wh_sep} = opts) do
     generator = if generator, do: "*", else: ""
     async = if async, do: "async ", else: ""
     params = params_and_defaults(params, defaults, opts)
@@ -593,7 +593,7 @@ defmodule ESTree.Tools.Generator do
 
   # FunctionExpression
 
-  def do_generate(%FunctionExpression{generator: generator, async: async, params: params, defaults: defaults, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%FunctionExpression{generator: generator, async: async, params: params, defaults: defaults, body: body}, %{wh_sep: wh_sep} = opts) do
     generator = if generator, do: "*", else: ""
     async = if async, do: "async ", else: ""
     params = params_and_defaults(params, defaults, opts)
@@ -604,13 +604,13 @@ defmodule ESTree.Tools.Generator do
 
   # Identifier
 
-  def do_generate(%Identifier{name: name}, _opts) do
+  defp do_generate(%Identifier{name: name}, _opts) do
     to_string(name)
   end
 
   # IfStatement
 
-  def do_generate(%IfStatement{test: test, consequent: consequent, alternate: nil}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%IfStatement{test: test, consequent: consequent, alternate: nil}, %{wh_sep: wh_sep} = opts) do
     test = do_generate(test, opts)
 
     sep_c = if opts.beauty do
@@ -637,7 +637,7 @@ defmodule ESTree.Tools.Generator do
     ["if", wh_sep, "(", test, ")", consequent]
   end
 
-  def do_generate(%IfStatement{test: test, consequent: consequent, alternate: alternate}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%IfStatement{test: test, consequent: consequent, alternate: alternate}, %{wh_sep: wh_sep} = opts) do
     test = do_generate(test, opts)
 
     sep_c = if opts.beauty do
@@ -684,7 +684,7 @@ defmodule ESTree.Tools.Generator do
 
   # ImportDeclaration
 
-  def do_generate(%ImportDeclaration{specifiers: [%ImportDefaultSpecifier{}] = specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ImportDeclaration{specifiers: [%ImportDefaultSpecifier{}] = specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
     specifiers = specifiers
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -694,7 +694,7 @@ defmodule ESTree.Tools.Generator do
     ["import ", specifiers, " from", wh_sep, source, ";"]
   end
 
-  def do_generate(%ImportDeclaration{specifiers: [%ImportNamespaceSpecifier{}] = specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ImportDeclaration{specifiers: [%ImportNamespaceSpecifier{}] = specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
     specifiers = specifiers
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -702,7 +702,7 @@ defmodule ESTree.Tools.Generator do
     ["import", specifiers, " from", wh_sep, do_generate(source, opts), ";"]
   end
 
-  def do_generate(%ImportDeclaration{specifiers: specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ImportDeclaration{specifiers: specifiers, source: source}, %{wh_sep: wh_sep} = opts) do
     specifiers = specifiers
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -712,19 +712,19 @@ defmodule ESTree.Tools.Generator do
 
   # ImportDefaultSpecifier
 
-  def do_generate(%ImportDefaultSpecifier{local: local}, opts) do
+  defp do_generate(%ImportDefaultSpecifier{local: local}, opts) do
     do_generate(local, opts)
   end
 
   # ImportNamespaceSpecifier
 
-  def do_generate(%ImportNamespaceSpecifier{local: local}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ImportNamespaceSpecifier{local: local}, %{wh_sep: wh_sep} = opts) do
     [wh_sep, "*", wh_sep, "as ", do_generate(local, opts)]
   end
 
   # ImportSpecifier
 
-  def do_generate(%ImportSpecifier{local: local, imported: imported}, opts) do
+  defp do_generate(%ImportSpecifier{local: local, imported: imported}, opts) do
     if local == imported do
       do_generate(local, opts)
     else
@@ -734,19 +734,19 @@ defmodule ESTree.Tools.Generator do
 
   # JSXAttribute
 
-  def do_generate(%JSXAttribute{name: name, value: value}, opts) do
+  defp do_generate(%JSXAttribute{name: name, value: value}, opts) do
     [do_generate(name, opts), "=", do_generate(value, opts)]
   end
 
   # JSXClosingElement
 
-  def do_generate(%JSXClosingElement{name: name}, opts) do
+  defp do_generate(%JSXClosingElement{name: name}, opts) do
     ["</", do_generate(name, opts), ">"]
   end
 
   # JSXElement
 
-  def do_generate(%JSXElement{openingElement: opening_element, children: children, closingElement: closing_element}, opts) do
+  defp do_generate(%JSXElement{openingElement: opening_element, children: children, closingElement: closing_element}, opts) do
     opening_element = do_generate(opening_element, opts)
     children = generate_jsx_children(children, opts)
     closing_element = do_generate(closing_element, opts)
@@ -756,41 +756,41 @@ defmodule ESTree.Tools.Generator do
 
   # JSXEmptyExpression
 
-  def do_generate(%JSXEmptyExpression{}, _opts) do
+  defp do_generate(%JSXEmptyExpression{}, _opts) do
     ""
   end
 
   # JSXExpressionContainer
 
-  def do_generate(%JSXExpressionContainer{expression: expression}, opts) do
+  defp do_generate(%JSXExpressionContainer{expression: expression}, opts) do
     ["{", do_generate(expression, opts), "}"]
   end
 
   # JSXIdentifier
 
-  def do_generate(%JSXIdentifier{name: name}, _opts) when is_binary(name) do
+  defp do_generate(%JSXIdentifier{name: name}, _opts) when is_binary(name) do
     name
   end
 
-  def do_generate(%JSXIdentifier{name: name}, _opts) when is_atom(name) do
+  defp do_generate(%JSXIdentifier{name: name}, _opts) when is_atom(name) do
     to_string(name)
   end
 
   # JSXMemberExpression
 
-  def do_generate(%JSXMemberExpression{object: object, property: property}, opts) do
+  defp do_generate(%JSXMemberExpression{object: object, property: property}, opts) do
     [do_generate(object, opts), ".", do_generate(property, opts)]
   end
 
   # JSXNamespacedName
 
-  def do_generate(%JSXNamespacedName{namespace: namespace, name: name}, opts) do
+  defp do_generate(%JSXNamespacedName{namespace: namespace, name: name}, opts) do
     [do_generate(namespace, opts), ":", do_generate(name, opts)]
   end
 
   # JSXOpeningElement
 
-  def do_generate(%JSXOpeningElement{name: name, attributes: attributes, selfClosing: self_closing}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%JSXOpeningElement{name: name, attributes: attributes, selfClosing: self_closing}, %{wh_sep: wh_sep} = opts) do
     self_closing = if self_closing, do: [wh_sep, "/"], else: ""
     attributes_value = cond do
       Enum.empty?(attributes) -> ""
@@ -807,13 +807,13 @@ defmodule ESTree.Tools.Generator do
 
   # JSXSpreadAttribute
 
-  def do_generate(%JSXSpreadAttribute{argument: argument}, opts) do
+  defp do_generate(%JSXSpreadAttribute{argument: argument}, opts) do
     ["{...", do_generate(argument, opts), "}"]
   end
 
   # LabeledStatement
 
-  def do_generate(%LabeledStatement{label: label, body: body}, opts) do
+  defp do_generate(%LabeledStatement{label: label, body: body}, opts) do
     label = do_generate(label, opts)
     body = do_generate(body, opts)
 
@@ -822,33 +822,33 @@ defmodule ESTree.Tools.Generator do
 
   # Literal
 
-  def do_generate(%Literal{value: nil}, _opts) do
+  defp do_generate(%Literal{value: nil}, _opts) do
     "null"
   end
 
-  def do_generate(%Literal{value: %{}, regex: regex}, _opts) do
+  defp do_generate(%Literal{value: %{}, regex: regex}, _opts) do
     ["/", regex.pattern, "/", regex.flags]
   end
 
-  def do_generate(%Literal{value: value}, _opts) when is_boolean(value) do
+  defp do_generate(%Literal{value: value}, _opts) when is_boolean(value) do
     to_string(value)
   end
 
-  def do_generate(%Literal{value: value}, _opts) when is_atom(value) do
+  defp do_generate(%Literal{value: value}, _opts) when is_atom(value) do
     ["'", to_string(value), "'"]
   end
 
-  def do_generate(%Literal{value: value}, _opts) when is_binary(value) do
+  defp do_generate(%Literal{value: value}, _opts) when is_binary(value) do
     ["'", escape_string(value), "'"]
   end
 
-  def do_generate(%Literal{value: value}, _opts) do
+  defp do_generate(%Literal{value: value}, _opts) do
     to_string(value)
   end
 
   # LogicalExpression
 
-  def do_generate(%LogicalExpression{operator: operator, left: left, right: right} = node, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%LogicalExpression{operator: operator, left: left, right: right} = node, %{wh_sep: wh_sep} = opts) do
     operator = do_generate(operator, opts)
     left = format_binary_expression(left, node, false, opts)
     right = format_binary_expression(right, node, true, opts)
@@ -858,7 +858,7 @@ defmodule ESTree.Tools.Generator do
 
   # MemberExpression
 
-  def do_generate(%MemberExpression{object: object, property: property, computed: computed}, opts) do
+  defp do_generate(%MemberExpression{object: object, property: property, computed: computed}, opts) do
     precedence = Map.get(@expressions_precedence, object.__struct__)
     object = do_generate(object, opts)
 
@@ -881,20 +881,20 @@ defmodule ESTree.Tools.Generator do
 
   # MetaProperty
 
-  def do_generate(%MetaProperty{meta: meta, property: property}, opts) do
+  defp do_generate(%MetaProperty{meta: meta, property: property}, opts) do
     [do_generate(meta, opts), ".", do_generate(property, opts)]
   end
 
   # MethodDefinition
 
-  def do_generate(%MethodDefinition{key: _key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :constructor}, opts) do
+  defp do_generate(%MethodDefinition{key: _key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :constructor}, opts) do
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
 
     ["constructor(", params, ")", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: false, static: false}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: false, static: false}, opts) do
     key = do_generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -902,7 +902,7 @@ defmodule ESTree.Tools.Generator do
     [key, "(", params, ")", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: false, static: true}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: false, static: true}, opts) do
     key = do_generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -910,7 +910,7 @@ defmodule ESTree.Tools.Generator do
     ["static ", key, "(", params, ")", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: true, static: false}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: true, static: false}, opts) do
     key = do_generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -918,7 +918,7 @@ defmodule ESTree.Tools.Generator do
     ["[", key, "](", params, ")", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: true, static: true}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :method, computed: true, static: true}, opts) do
     key = generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -926,14 +926,14 @@ defmodule ESTree.Tools.Generator do
     ["static [", key, "](", params, ")", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{body: body}, kind: :get, static: true}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{body: body}, kind: :get, static: true}, opts) do
     key = generate(key, opts)
     body = do_generate(body, opts)
 
     ["static get ", key, "()", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :set, static: true}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :set, static: true}, opts) do
     key = generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -941,14 +941,14 @@ defmodule ESTree.Tools.Generator do
     ["static set ", key, "(", params, ")", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{body: body}, kind: :get}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{body: body}, kind: :get}, opts) do
     key = generate(key, opts)
     body = do_generate(body, opts)
 
     ["get ", key, "()", opts.wh_sep, body]
   end
 
-  def do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :set}, opts) do
+  defp do_generate(%MethodDefinition{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :set}, opts) do
     key = generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -958,7 +958,7 @@ defmodule ESTree.Tools.Generator do
 
   # NewExpression
 
-  def do_generate(%NewExpression{callee: callee, arguments: arguments}, opts) do
+  defp do_generate(%NewExpression{callee: callee, arguments: arguments}, opts) do
     precedence = Map.get(@expressions_precedence, callee.__struct__)
 
     callee = if precedence < @expressions_precedence[NewExpression] or has_call_expression(callee) do
@@ -976,15 +976,15 @@ defmodule ESTree.Tools.Generator do
 
   # ObjectExpression
 
-  def do_generate(%ObjectExpression{properties: nil}, _opts) do
+  defp do_generate(%ObjectExpression{properties: nil}, _opts) do
    "{}"
   end
 
-  def do_generate(%ObjectExpression{properties: []}, _opts) do
+  defp do_generate(%ObjectExpression{properties: []}, _opts) do
    "{}"
   end
 
-  def do_generate(%ObjectExpression{properties: properties}, opts) do
+  defp do_generate(%ObjectExpression{properties: properties}, opts) do
     close_bracket = if opts.beauty do
       ["\n", indent(opts), "}"]
     else
@@ -1015,7 +1015,7 @@ defmodule ESTree.Tools.Generator do
 
   # ObjectPattern
 
-  def do_generate(%ObjectPattern{properties: properties}, opts) do
+  defp do_generate(%ObjectPattern{properties: properties}, opts) do
     properties = properties
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -1025,11 +1025,11 @@ defmodule ESTree.Tools.Generator do
 
   # Program
 
-  def do_generate(%Program{body: []}, _opts) do
+  defp do_generate(%Program{body: []}, _opts) do
     ""
   end
 
-  def do_generate(%Program{body: body}, opts) do
+  defp do_generate(%Program{body: body}, opts) do
     sep = if opts.beauty do
       "\n\n"
     else
@@ -1043,25 +1043,25 @@ defmodule ESTree.Tools.Generator do
 
   # Property
 
-  def do_generate(%Property{key: key, value: value, kind: :init, shorthand: false, method: false, computed: false}, %{colon_sep: colon_sep} = opts) do
+  defp do_generate(%Property{key: key, value: value, kind: :init, shorthand: false, method: false, computed: false}, %{colon_sep: colon_sep} = opts) do
     key = do_generate(key, opts)
     value = do_generate(value, opts)
 
     [key, colon_sep, value]
   end
 
-  def do_generate(%Property{key: key, value: _, kind: :init, shorthand: true, method: false, computed: false}, opts) do
+  defp do_generate(%Property{key: key, value: _, kind: :init, shorthand: true, method: false, computed: false}, opts) do
     do_generate(key, opts)
   end
 
-  def do_generate(%Property{key: key, value: value, kind: :init, shorthand: false, method: false, computed: true}, %{colon_sep: colon_sep} = opts) do
+  defp do_generate(%Property{key: key, value: value, kind: :init, shorthand: false, method: false, computed: true}, %{colon_sep: colon_sep} = opts) do
     key = do_generate(key, opts)
     value = do_generate(value, opts)
 
     ["[", key, "]", colon_sep, value]
   end
 
-  def do_generate(%Property{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :init, shorthand: false, method: true, computed: true}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%Property{key: key, value: %FunctionExpression{params: params, defaults: defaults, body: body}, kind: :init, shorthand: false, method: true, computed: true}, %{wh_sep: wh_sep} = opts) do
     key = do_generate(key, opts)
     params = params_and_defaults(params, defaults, opts)
     body = do_generate(body, opts)
@@ -1069,21 +1069,21 @@ defmodule ESTree.Tools.Generator do
     ["[", key, "]", "(", params, ")", wh_sep, body]
   end
 
-  def do_generate(%Property{key: key, value: %FunctionExpression{body: body}, kind: :get, shorthand: false, method: true, computed: false}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%Property{key: key, value: %FunctionExpression{body: body}, kind: :get, shorthand: false, method: true, computed: false}, %{wh_sep: wh_sep} = opts) do
     key = do_generate(key, opts)
     body = do_generate(body, opts)
 
     [key, "()", wh_sep, body]
   end
 
-  def do_generate(%Property{key: key, value: %FunctionExpression{body: body}, kind: :get}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%Property{key: key, value: %FunctionExpression{body: body}, kind: :get}, %{wh_sep: wh_sep} = opts) do
     key = do_generate(key, opts)
     body = do_generate(body, opts)
 
     ["get ", key, "()", wh_sep, body]
   end
 
-  def do_generate(%Property{key: key, value: %FunctionExpression{params: params, body: body}, kind: :set, shorthand: false, method: true, computed: false}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%Property{key: key, value: %FunctionExpression{params: params, body: body}, kind: :set, shorthand: false, method: true, computed: false}, %{wh_sep: wh_sep} = opts) do
     key = do_generate(key, opts)
     params = do_generate(hd(params), opts)
     body = do_generate(body, opts)
@@ -1091,7 +1091,7 @@ defmodule ESTree.Tools.Generator do
     [key, "(", params, ")", wh_sep, body]
   end
 
-  def do_generate(%Property{key: key, value: %FunctionExpression{params: params, body: body}, kind: :set}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%Property{key: key, value: %FunctionExpression{params: params, body: body}, kind: :set}, %{wh_sep: wh_sep} = opts) do
     key = do_generate(key, opts)
     params = do_generate(hd(params), opts)
     body = do_generate(body, opts)
@@ -1101,22 +1101,22 @@ defmodule ESTree.Tools.Generator do
 
   # RestElement
 
-  def do_generate(%RestElement{argument: argument}, opts) do
+  defp do_generate(%RestElement{argument: argument}, opts) do
     ["...", do_generate(argument, opts)]
   end
 
   # ReturnStatement
-  def do_generate(%ReturnStatement{argument: nil}, _opts) do
+  defp do_generate(%ReturnStatement{argument: nil}, _opts) do
     "return;"
   end
 
-  def do_generate(%ReturnStatement{argument: argument}, opts) do
+  defp do_generate(%ReturnStatement{argument: argument}, opts) do
     ["return ", do_generate(argument, opts), ";"]
   end
 
   # SequenceExpression
 
-  def do_generate(%SequenceExpression{expressions: expressions}, opts) do
+  defp do_generate(%SequenceExpression{expressions: expressions}, opts) do
     expressions = expressions
     |> Enum.map(&do_generate(&1, opts))
     |> Enum.intersperse(opts.comma_sep)
@@ -1126,19 +1126,19 @@ defmodule ESTree.Tools.Generator do
 
   # SpreadElement
 
-  def do_generate(%SpreadElement{argument: argument}, opts) do
+  defp do_generate(%SpreadElement{argument: argument}, opts) do
     ["...", do_generate(argument, opts)]
   end
 
   # Super
 
-  def do_generate(%Super{}, _opts) do
+  defp do_generate(%Super{}, _opts) do
     "super"
   end
 
   # SwitchCase
 
-  def do_generate(%SwitchCase{test: nil, consequent: consequent}, opts) do
+  defp do_generate(%SwitchCase{test: nil, consequent: consequent}, opts) do
     start_sep = if opts.beauty do
       indent(opts, 1)
     else
@@ -1158,7 +1158,7 @@ defmodule ESTree.Tools.Generator do
     [start_sep, "default:", sep, consequent]
   end
 
-  def do_generate(%SwitchCase{test: test, consequent: consequent}, opts) do
+  defp do_generate(%SwitchCase{test: test, consequent: consequent}, opts) do
     start_sep = if opts.beauty do
       indent(opts, 1)
     else
@@ -1182,7 +1182,7 @@ defmodule ESTree.Tools.Generator do
 
   # SwitchStatement
 
-  def do_generate(%SwitchStatement{discriminant: discriminant, cases: cases}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%SwitchStatement{discriminant: discriminant, cases: cases}, %{wh_sep: wh_sep} = opts) do
     open_bracket = if opts.beauty do
       "{\n"
     else
@@ -1214,25 +1214,25 @@ defmodule ESTree.Tools.Generator do
 
   # TaggedTemplateExpression
 
-  def do_generate(%TaggedTemplateExpression{tag: tag, quasi: quasi}, opts) do
+  defp do_generate(%TaggedTemplateExpression{tag: tag, quasi: quasi}, opts) do
     [do_generate(tag, opts), " ", do_generate(quasi, opts)]
   end
 
   # TemplateLiteral
 
-  def do_generate(%TemplateLiteral{expressions: [], quasis: []}, _opts) do
+  defp do_generate(%TemplateLiteral{expressions: [], quasis: []}, _opts) do
     "``"
   end
 
-  def do_generate(%TemplateLiteral{expressions: [expression], quasis: []}, opts) do
+  defp do_generate(%TemplateLiteral{expressions: [expression], quasis: []}, opts) do
     ["`${", do_generate(expression, opts), "}`"]
   end
 
-  def do_generate(%TemplateLiteral{expressions: [], quasis: [quasi]}, _opts) do
+  defp do_generate(%TemplateLiteral{expressions: [], quasis: [quasi]}, _opts) do
     ["`", escape_string(quasi.value.raw, false), "`"]
   end
 
-  def do_generate(%TemplateLiteral{expressions: expressions, quasis: quasis}, opts) do
+  defp do_generate(%TemplateLiteral{expressions: expressions, quasis: quasis}, opts) do
     elements = expressions ++ quasis
 
     literal = elements
@@ -1254,33 +1254,33 @@ defmodule ESTree.Tools.Generator do
 
   # ThisExpression
 
-  def do_generate(%ThisExpression{}, _opts) do
+  defp do_generate(%ThisExpression{}, _opts) do
     "this"
   end
 
   # ThrowStatement
 
-  def do_generate(%ThrowStatement{argument: argument}, opts) do
+  defp do_generate(%ThrowStatement{argument: argument}, opts) do
     ["throw ", do_generate(argument, opts), ";"]
   end
 
   # TryStatement
 
-  def do_generate(%TryStatement{block: block, handler: handler, finalizer: nil}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%TryStatement{block: block, handler: handler, finalizer: nil}, %{wh_sep: wh_sep} = opts) do
     block = do_generate(block, opts)
     handler = do_generate(handler, opts)
 
     ["try", wh_sep, block, wh_sep, handler]
   end
 
-  def do_generate(%TryStatement{block: block, handler: nil, finalizer: finalizer}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%TryStatement{block: block, handler: nil, finalizer: finalizer}, %{wh_sep: wh_sep} = opts) do
     block = do_generate(block, opts)
     finalizer = do_generate(finalizer, opts)
 
     ["try", wh_sep, block, wh_sep, "finally", wh_sep, finalizer]
   end
 
-  def do_generate(%TryStatement{block: block, handler: handler, finalizer: finalizer}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%TryStatement{block: block, handler: handler, finalizer: finalizer}, %{wh_sep: wh_sep} = opts) do
     block = do_generate(block, opts)
     handler = do_generate(handler, opts)
     finalizer = do_generate(finalizer, opts)
@@ -1290,7 +1290,7 @@ defmodule ESTree.Tools.Generator do
 
   # UnaryExpression
 
-  def do_generate(%UnaryExpression{operator: operator, prefix: true, argument: argument}, opts) do
+  defp do_generate(%UnaryExpression{operator: operator, prefix: true, argument: argument}, opts) do
     precedence = Map.get(@expressions_precedence, argument.__struct__)
 
     sep = if operator in [:delete, :typeof, :void], do: " ", else: ""
@@ -1304,23 +1304,23 @@ defmodule ESTree.Tools.Generator do
     end
   end
 
-  def do_generate(%UnaryExpression{operator: operator, prefix: false, argument: argument}, opts) do
+  defp do_generate(%UnaryExpression{operator: operator, prefix: false, argument: argument}, opts) do
     [do_generate(argument, opts), do_generate(operator, opts)]
   end
 
   # UpdateExpression
 
-  def do_generate(%UpdateExpression{operator: operator, prefix: true, argument: argument}, opts) do
+  defp do_generate(%UpdateExpression{operator: operator, prefix: true, argument: argument}, opts) do
     [do_generate(operator, opts), do_generate(argument, opts)]
   end
 
-  def do_generate(%UpdateExpression{operator: operator, prefix: false, argument: argument}, opts) do
+  defp do_generate(%UpdateExpression{operator: operator, prefix: false, argument: argument}, opts) do
     [do_generate(argument, opts), do_generate(operator, opts)]
   end
 
   # VariableDeclaration
 
-  def do_generate(%VariableDeclaration{kind: kind, declarations: declarations}, opts) when kind in [:var, :let, :const] do
+  defp do_generate(%VariableDeclaration{kind: kind, declarations: declarations}, opts) when kind in [:var, :let, :const] do
     i = indent(next_indent(opts))
     sep = if opts.beauty do
       if kind == :const do
@@ -1347,29 +1347,29 @@ defmodule ESTree.Tools.Generator do
 
   # VariableDeclarator
 
-  def do_generate(%VariableDeclarator{id: id, init: nil}, opts) do
+  defp do_generate(%VariableDeclarator{id: id, init: nil}, opts) do
     do_generate(id, opts)
   end
 
-  def do_generate(%VariableDeclarator{id: id, init: %FunctionDeclaration{} = init}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%VariableDeclarator{id: id, init: %FunctionDeclaration{} = init}, %{wh_sep: wh_sep} = opts) do
     opts = %{next_indent(opts) | no_trailing_semicolon: true}
 
     [do_generate(id, opts), wh_sep, "=", wh_sep, do_generate(init, opts)]
   end
 
-  def do_generate(%VariableDeclarator{id: id, init: %FunctionExpression{} = init}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%VariableDeclarator{id: id, init: %FunctionExpression{} = init}, %{wh_sep: wh_sep} = opts) do
     opts = %{next_indent(opts) | no_trailing_semicolon: true}
 
     [do_generate(id, opts), wh_sep, "=", wh_sep, do_generate(init, opts)]
   end
 
-  def do_generate(%VariableDeclarator{id: id, init: init}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%VariableDeclarator{id: id, init: init}, %{wh_sep: wh_sep} = opts) do
     [do_generate(id, opts), wh_sep, "=", wh_sep, do_generate(init, opts)]
   end
 
   # WhileStatement
 
-  def do_generate(%WhileStatement{test: test, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%WhileStatement{test: test, body: body}, %{wh_sep: wh_sep} = opts) do
     test = do_generate(test, opts)
     body = do_generate(body, opts)
 
@@ -1378,7 +1378,7 @@ defmodule ESTree.Tools.Generator do
 
   # WithStatement
 
-  def do_generate(%WithStatement{object: object, body: body}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%WithStatement{object: object, body: body}, %{wh_sep: wh_sep} = opts) do
     object = do_generate(object, opts)
     body = do_generate(body, opts)
 
@@ -1387,11 +1387,11 @@ defmodule ESTree.Tools.Generator do
 
   # YieldExpression
 
-  def do_generate(%YieldExpression{argument: argument, delegate: false}, opts) do
+  defp do_generate(%YieldExpression{argument: argument, delegate: false}, opts) do
     ["yield ", do_generate(argument, opts)]
   end
 
-  def do_generate(%YieldExpression{argument: argument, delegate: true}, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%YieldExpression{argument: argument, delegate: true}, %{wh_sep: wh_sep} = opts) do
     ["yield*", wh_sep, do_generate(argument, opts)]
   end
 
