@@ -1,3 +1,7 @@
+# v2.5.0
+* Enhancements:
+  * [Greatly improved formatting of generated JavaScript](https://github.com/bryanjos/elixir-estree/pull/15)
+
 # v2.4.2
 * Fixes
   * [Expressions in variable declarations](https://github.com/bryanjos/elixir-estree/pull/13)
