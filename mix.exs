@@ -5,21 +5,21 @@ defmodule ESTree.Mixfile do
     [app: :estree,
      version: "2.5.0",
      elixir: "~> 1.0",
-     deps: deps,
-     description: description,
-     package: package,
+     deps: deps(),
+     description: description(),
+     package: package(),
      source_url: "https://github.com/bryanjos/elixir-estree"]
   end
 
   def application do
-    [applications: [:logger]]
+    [extra_applications: [:logger]]
   end
 
   defp deps do
     [
       {:ex_doc, "~> 0.14", only: :dev},
       {:dialyze, "~> 0.2", only: :dev},
-      {:shouldi, only: :test}
+      {:shouldi, "~> 0.3.2", only: :test}
     ]
   end
 
