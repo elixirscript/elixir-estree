@@ -1,3 +1,7 @@
+# v2.5.1
+* Enhancements:
+  * [Correct If statement identation](https://github.com/bryanjos/elixir-estree/pull/18)
+
 # v2.5.0
 * Enhancements:
   * [Greatly improved formatting of generated JavaScript](https://github.com/bryanjos/elixir-estree/pull/15)
