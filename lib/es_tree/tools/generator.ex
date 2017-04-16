@@ -263,6 +263,10 @@ defmodule ESTree.Tools.Generator do
 
   # AwaitExpression
 
+  defp do_generate(%AwaitExpression{argument: %AwaitExpression{} = argument, all: _all}, opts) do
+    ["await ", "(", do_generate(argument, opts), ")"]
+  end
+
   defp do_generate(%AwaitExpression{argument: argument, all: _all}, opts) do
     ["await ", do_generate(argument, opts)]
   end
@@ -347,7 +351,12 @@ defmodule ESTree.Tools.Generator do
     end
 
     arguments = arguments
-    |> Enum.map(&do_generate(&1, opts))
+    |> Enum.map(fn
+        %s{} = x when s in [AwaitExpression, YieldExpression] ->
+          ["("] ++ do_generate(x, opts) ++ [")"]
+        x ->
+          do_generate(x, opts)
+       end)
     |> Enum.intersperse(opts.comma_sep)
 
     [callee, "(", arguments, ")"]
