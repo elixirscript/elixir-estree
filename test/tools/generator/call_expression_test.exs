@@ -91,4 +91,32 @@ defmodule ESTree.Tools.Generator.CallExpression.Test do
     assert_gen ast, "(a + b).x()"
     assert_gen ast, "(a+b).x()", beauty: false
   end
+
+  should "convert call expression with one argument that is an await" do
+    ast = Builder.call_expression(
+      Builder.identifier(:x),
+      [
+        Builder.await_expression(
+          Builder.identifier(:a)
+        )
+      ]
+    );
+
+    assert_gen ast, "x((await a))"
+    assert_gen ast, "x((await a))", beauty: false
+  end
+
+  should "convert call expression with one argument that is a yield" do
+    ast = Builder.call_expression(
+      Builder.identifier(:x),
+      [
+        Builder.yield_expression(
+          Builder.identifier(:a)
+        )
+      ]
+    );
+
+    assert_gen ast, "x((yield a))"
+    assert_gen ast, "x((yield a))", beauty: false
+  end
 end
