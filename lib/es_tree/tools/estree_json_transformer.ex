@@ -1,6 +1,6 @@
 defmodule ESTree.Tools.ESTreeJSONTransformer do
   @moduledoc """
-  Converts ESTree JSON into the Struct in the ESTree library
+  Converts ESTree JSON into the structs in the ESTree library
   """
 
 
