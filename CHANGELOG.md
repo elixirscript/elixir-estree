@@ -1,3 +1,8 @@
+# v2.6.0
+* Enhancements:
+  * [Add parenthesis around await expressions in await expressions or in call expressions](https://github.com/elixirscript/elixir-estree/pull/20)
+  * [Add ESTree.Tools.ESTreeJSONTransformer to translate ESTree JSON data into structs](https://github.com/bryanjos/elixir-estree/pull/21)
+
 # v2.5.1
 * Enhancements:
   * [Correct If statement identation](https://github.com/bryanjos/elixir-estree/pull/18)

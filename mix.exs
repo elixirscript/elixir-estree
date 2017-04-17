@@ -3,7 +3,7 @@ defmodule ESTree.Mixfile do
 
   def project do
     [app: :estree,
-     version: "2.5.1",
+     version: "2.6.0",
      elixir: "~> 1.0",
      deps: deps(),
      description: description(),
@@ -17,7 +17,7 @@ defmodule ESTree.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.14", only: :dev},
+      {:ex_doc, "~> 0.15.1", only: :dev},
       {:dialyze, "~> 0.2", only: :dev},
       {:shouldi, "~> 0.3.2", only: :test},
       {:poison, "~> 3.0", only: :test},
