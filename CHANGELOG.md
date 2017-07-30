@@ -1,3 +1,7 @@
+# v2.6.1
+* Enhancements:
+  * Add async to arrow function expressions
+
 # v2.6.0
 * Enhancements:
   * [Add parenthesis around await expressions in await expressions or in call expressions](https://github.com/elixirscript/elixir-estree/pull/20)

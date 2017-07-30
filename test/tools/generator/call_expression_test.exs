@@ -119,4 +119,19 @@ defmodule ESTree.Tools.Generator.CallExpression.Test do
     assert_gen ast, "x((yield a))"
     assert_gen ast, "x((yield a))", beauty: false
   end
+
+  should "convert call expression when callee is member expression and is an await" do
+    ast = Builder.call_expression(
+      Builder.member_expression(
+        Builder.await_expression(
+          Builder.identifier(:x)
+        ),
+        Builder.identifier(:y)
+      ),
+      []
+    );
+
+    assert_gen ast, "(await x).y()"
+    assert_gen ast, "(await x).y()", beauty: false
+  end
 end

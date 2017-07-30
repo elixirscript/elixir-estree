@@ -132,6 +132,7 @@ defmodule ESTree.Tools.Generator do
     ConditionalStatement     => 4,
     AssignmentExpression     => 3,
     YieldExpression          => 2,
+    AwaitExpression          => 2,
     RestElement              => 1
   }
 
@@ -220,8 +221,9 @@ defmodule ESTree.Tools.Generator do
 
   # ArrowFunctionExpression
 
-  defp do_generate(%ArrowFunctionExpression{params: params, defaults: defaults, body: body, generator: generator} = ast, %{wh_sep: wh_sep} = opts) do
+  defp do_generate(%ArrowFunctionExpression{params: params, defaults: defaults, body: body, generator: generator, async: async} = ast, %{wh_sep: wh_sep} = opts) do
     generator = if generator, do: "*", else: ""
+    async = if async, do: "async ", else: ""
     params = params_and_defaults(params, defaults, opts)
     body = if body.__struct__ == ObjectExpression do
       ["(", do_generate(body, opts), ")"]
@@ -230,9 +232,9 @@ defmodule ESTree.Tools.Generator do
     end
 
     if not opts.beauty and length(ast.params) == 1 do
-      [params, generator, wh_sep, "=>", wh_sep, body]
+      [async, params, generator, wh_sep, "=>", wh_sep, body]
     else
-      ["(", params, ")", generator, wh_sep, "=>", wh_sep, body]
+      [async, "(", params, ")", generator, wh_sep, "=>", wh_sep, body]
     end
   end
 

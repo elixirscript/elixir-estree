@@ -79,4 +79,18 @@ defmodule ESTree.Tools.Generator.ArrowFunctionExpression.Test do
     assert_gen ast, "(one, two = 1) => {}"
     assert_gen ast, "(one,two=1)=>{}", beauty: false
   end
+
+  should "convert basic arrow function expression async" do
+    ast = Builder.arrow_function_expression(
+      [],
+      [],
+      Builder.block_statement([]),
+      false,
+      false,
+      true
+    )
+
+    assert_gen ast, "async () => {}"
+    assert_gen ast, "async ()=>{}", beauty: false
+  end
 end
