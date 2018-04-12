@@ -30,6 +30,19 @@ defmodule ESTree.Tools.Generator.ArrowFunctionExpression.Test do
     assert_gen ast, "()=>({})", beauty: false
   end
 
+  should "convert basic arrow function object pattern has parens" do
+    ast = Builder.arrow_function_expression(
+      [Builder.object_pattern([Builder.identifier(:one)])],
+      [],
+      Builder.block_statement([]),
+      false,
+      false
+    )
+
+    assert_gen ast, "({one}) => {}"
+    assert_gen ast, "({one})=>{}", beauty: false
+  end
+
   should "convert basic arrow function expression generator" do
     ast = Builder.arrow_function_expression(
       [],

@@ -231,7 +231,7 @@ defmodule ESTree.Tools.Generator do
       do_generate(body, opts)
     end
 
-    if not opts.beauty and length(ast.params) == 1 do
+    if not opts.beauty and length(ast.params) == 1 and hd(ast.params).__struct__ != ObjectPattern do
       [async, params, generator, wh_sep, "=>", wh_sep, body]
     else
       [async, "(", params, ")", generator, wh_sep, "=>", wh_sep, body]
