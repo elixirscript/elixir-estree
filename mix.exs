@@ -20,7 +20,7 @@ defmodule ESTree.Mixfile do
       {:ex_doc, "~> 0.20.1", only: :dev},
       {:dialyze, "~> 0.2", only: :dev},
       {:shouldi, "~> 0.3.2", only: :test},
-      {:poison, "~> 3.0", only: :test},
+      {:poison, "~> 4.0", only: :test},
     ]
   end
 
