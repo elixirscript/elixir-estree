@@ -2,13 +2,15 @@ defmodule ESTree.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :estree,
-     version: "2.6.1",
-     elixir: "~> 1.0",
-     deps: deps(),
-     description: description(),
-     package: package(),
-     source_url: "https://github.com/bryanjos/elixir-estree"]
+    [
+      app: :estree,
+      version: "2.7.0",
+      elixir: "~> 1.0",
+      deps: deps(),
+      description: description(),
+      package: package(),
+      source_url: "https://github.com/bryanjos/elixir-estree"
+    ]
   end
 
   def application do
@@ -20,7 +22,7 @@ defmodule ESTree.Mixfile do
       {:ex_doc, "~> 0.20.1", only: :dev},
       {:dialyze, "~> 0.2", only: :dev},
       {:shouldi, "~> 0.3.2", only: :test},
-      {:poison, "~> 3.0", only: :test},
+      {:poison, "~> 4.0", only: :test}
     ]
   end
 
@@ -32,11 +34,12 @@ defmodule ESTree.Mixfile do
   end
 
   defp package do
-    [ # These are the default files included in the package
+    # These are the default files included in the package
+    [
       files: ["lib", "mix.exs", "README.md", "CHANGELOG.md"],
       maintainers: ["Bryan Joseph"],
       licenses: ["MIT"],
-      links: %{ "GitHub" => "https://github.com/bryanjos/elixir-estree" }
+      links: %{"GitHub" => "https://github.com/bryanjos/elixir-estree"}
     ]
   end
 end
