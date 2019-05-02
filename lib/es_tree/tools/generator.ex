@@ -145,9 +145,9 @@ defmodule ESTree.Tools.Generator do
     :">>>=" , :"|=" , :"^=" , :"&=", :++, :--
   ]
 
-  @spec generate(ESTree.operator | ESTree.Node.t, boolean) :: binary
-  def generate(value, beauty \\ true) do
-    opts = if beauty do
+  @spec generate(ESTree.operator | ESTree.Node.t, boolean | map) :: binary
+  def generate(value, beauty_or_opts \\ true) do
+    opts = if beauty_or_opts do
       %{
         beauty: true,
         wh_sep: " ",
@@ -169,6 +169,8 @@ defmodule ESTree.Tools.Generator do
         no_trailing_semicolon: false
       }
     )
+    
+    opts = if is_map(beauty_or_opts), do: Map.merge(opts, beauty_or_opts), else: opts
 
     value
     |> do_generate(opts)
